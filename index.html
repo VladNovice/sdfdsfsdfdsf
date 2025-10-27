@@ -3,75 +3,121 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<title>Hit⚡️Points — Checkout UI</title>
+<title>Hit⚡️Points — Coffee Mini App</title>
 <style>
   :root{
     --bg:#0b0b0b;
     --card:#151515;
-    --muted:#99a2a8;
+    --muted:#9aa6a3; /* чуть светлее для читаемости */
+    --text:#e9f6f0;
     --accent-green:#19a974;
     --accent-green-2:#0f8f58;
     --accent-red:#ff4d4f;
     --glass: rgba(255,255,255,0.02);
+    --glass-strong: rgba(255,255,255,0.04);
     --radius:14px;
     --shadow-lg: 0 20px 44px rgba(0,0,0,0.65);
     --shadow-sm: 0 8px 18px rgba(0,0,0,0.45);
+    --tap-size: 44px; /* минимальная область касания */
     font-family: -apple-system,BlinkMacSystemFont,"Inter","Segoe UI",Roboto,"Helvetica Neue",Arial;
   }
-  *{box-sizing:border-box}
-  html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg),#070707);color:#eef6f2;-webkit-font-smoothing:antialiased}
-  img{display:block;max-width:100%}
 
-  /* App shell */
-  .wrap{max-width:920px;margin:0 auto;padding:12px 12px 140px}
+  /* reset & base */
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg),#070707);color:var(--text);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  img{display:block;max-width:100%}
+  a{color:inherit}
+
+  /* responsive base font */
+  html{font-size:16px}
+  body{font-size:clamp(14px, 2.6vw, 16px);line-height:1.35}
+
+  /* app shell */
+  .wrap{
+    max-width:980px;
+    margin:0 auto;
+    padding:12px calc(12px + env(safe-area-inset-left)) 140px calc(12px + env(safe-area-inset-right));
+  }
   header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
-  .logo{width:52px;height:52px;border-radius:12px;background:linear-gradient(180deg,#1e1e1e,#141414);display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-sm);flex:0 0 52px}
+  .logo{
+    width:52px;height:52px;border-radius:12px;
+    background:linear-gradient(180deg,#1e1e1e,#141414);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:var(--shadow-sm);flex:0 0 52px;
+  }
   .bolt{font-size:20px;color:var(--accent-green)}
   h1{margin:0;font-size:18px}
   .lead{margin:0;font-size:13px;color:var(--muted)}
 
   .top-actions{margin-left:auto;display:flex;gap:8px;align-items:center}
-  .icon-btn{width:44px;height:40px;border-radius:10px;background:var(--glass);display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,0.03);box-shadow:var(--shadow-sm);cursor:pointer}
-  .admin-btn{padding:8px 10px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03);font-weight:700;display:inline-flex;align-items:center;gap:8px;cursor:pointer}
+  .icon-btn{
+    width:44px;height:44px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,0.03);box-shadow:var(--shadow-sm);cursor:pointer;
+    min-width:var(--tap-size);min-height:var(--tap-size);
+  }
+  .admin-btn{padding:8px 10px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03);font-weight:700;display:inline-flex;align-items:center;gap:8px;cursor:pointer}
 
   .search{margin:10px 0 14px;display:flex;gap:8px;align-items:center}
-  .search input{flex:1;padding:10px;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:inherit;font-size:15px}
+  .search input{
+    flex:1;padding:12px;border-radius:12px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:var(--text);font-size:15px;
+    min-height:44px;
+  }
   .tag{padding:8px 10px;border-radius:10px;background:rgba(255,255,255,0.02);font-weight:700;font-size:13px}
 
-  /* 2-column grid (mobile-first) */
+  /* grid */
   .menu{
     display:grid;
     grid-template-columns: repeat(2, minmax(0,1fr));
-    gap:10px;
+    gap:12px;
     align-items:start;
   }
 
+  /* card */
   .card{
     background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));
-    border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.03);box-shadow:var(--shadow-sm);
-    display:flex;flex-direction:column;min-height:220px;min-width:0;
+    border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,0.03);box-shadow:var(--shadow-sm);
+    display:flex;flex-direction:column;min-height:260px;min-width:0;
   }
-  .card .img{width:100%;height:120px;background-position:center;background-size:cover;flex-shrink:0}
-  .card .body{padding:10px;display:flex;flex-direction:column;gap:8px}
-  .card h3{margin:0;font-size:15px}
-  .desc{font-size:13px;color:var(--muted);line-height:1.25}
+  .card .img{
+    width:100%;height:140px;background-position:center;background-size:cover;flex-shrink:0;object-fit:cover;
+  }
+  .card .body{padding:12px;display:flex;flex-direction:column;gap:10px}
+  .card h3{margin:0;font-size:16px;color:var(--text);line-height:1.15}
+  .desc{font-size:13px;color:var(--muted);line-height:1.25;max-height:3.2em;overflow:hidden}
   .price{font-weight:900;font-size:15px;color:var(--accent-green)}
 
-  .controls{display:flex;gap:8px;align-items:center}
-  .qty{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.02);padding:6px;border-radius:10px;border:1px solid rgba(255,255,255,0.02)}
-  .qty button{width:34px;height:34px;border-radius:10px;border:0;background:transparent;font-size:18px;font-weight:800;color:inherit;cursor:pointer}
-  .add-btn{padding:10px 12px;border-radius:10px;font-weight:800;border:0;background:linear-gradient(180deg, rgba(25,169,116,0.16), rgba(25,169,116,0.08));color:var(--accent-green);min-width:78px;text-align:center;box-shadow:var(--shadow-sm);cursor:pointer}
+  .controls{display:flex;gap:12px;align-items:center}
+  .qty{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.02);padding:6px;border-radius:12px;border:1px solid rgba(255,255,255,0.02)}
+  .qty button{
+    width:36px;height:36px;border-radius:10px;border:0;background:transparent;font-size:18px;font-weight:800;color:inherit;cursor:pointer;
+    min-width:36px;min-height:36px;
+  }
+  .qty [role="spinbutton"]{min-width:28px;text-align:center;font-weight:800}
+
+  .add-btn{
+    padding:10px 14px;border-radius:12px;font-weight:900;border:0;background:linear-gradient(180deg, rgba(25,169,116,0.16), rgba(25,169,116,0.08));
+    color:var(--accent-green);min-width:88px;text-align:center;box-shadow:var(--shadow-sm);cursor:pointer;
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;
+  }
+  .add-btn[aria-pressed="true"]{background:linear-gradient(180deg,var(--accent-green),var(--accent-green-2));color: #fff}
 
   /* bottom bar */
-  .bottom-bar{position:fixed;left:12px;right:12px;bottom:16px;background:linear-gradient(180deg,var(--card),#0f0f0f);border-radius:16px;padding:10px 12px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow-lg);z-index:1200;border:1px solid rgba(255,255,255,0.03)}
+  .bottom-bar{
+    position:fixed;left:12px;right:12px;bottom:calc(16px + env(safe-area-inset-bottom));
+    background:linear-gradient(180deg,var(--card),#0f0f0f);border-radius:16px;padding:10px 12px;display:flex;align-items:center;gap:12px;
+    box-shadow:var(--shadow-lg);z-index:1200;border:1px solid rgba(255,255,255,0.03);
+  }
   .cart-mini{display:flex;gap:10px;align-items:center;flex:1}
-  .count{background:rgba(255,255,255,0.03);padding:8px 10px;border-radius:12px;font-weight:900}
+  .count{background:rgba(255,255,255,0.03);padding:8px 10px;border-radius:12px;font-weight:900;min-width:44px;text-align:center}
   .sum{font-weight:900;font-size:16px}
-  .open-cart-btn{padding:10px 14px;border-radius:12px;background:linear-gradient(180deg, var(--accent-green), var(--accent-green-2));border:0;color:white;font-weight:900;cursor:pointer;box-shadow:var(--shadow-sm)}
+  .open-cart-btn{padding:12px 16px;border-radius:12px;background:linear-gradient(180deg, var(--accent-green), var(--accent-green-2));border:0;color:white;font-weight:900;cursor:pointer;min-height:44px}
 
-  /* CHECKOUT SHEET — redesigned */
+  /* sheet */
   .sheet{
-    position:fixed;left:0;right:0;bottom:-100%;height:82vh;background:linear-gradient(180deg,var(--card),#0b0b0b);border-top-left-radius:18px;border-top-right-radius:18px;box-shadow:0 -22px 56px rgba(0,0,0,0.75);z-index:1400;transition:bottom .34s cubic-bezier(.2,.9,.25,1);display:flex;flex-direction:column;padding:12px;gap:12px;
+    position:fixed;left:0;right:0;bottom:-100%;height:82vh;background:linear-gradient(180deg,var(--card),#0b0b0b);
+    border-top-left-radius:18px;border-top-right-radius:18px;box-shadow:0 -22px 56px rgba(0,0,0,0.75);
+    z-index:1400;transition:bottom .34s cubic-bezier(.2,.9,.25,1);display:flex;flex-direction:column;padding:12px;gap:12px;
+    padding-bottom:calc(12px + env(safe-area-inset-bottom));
   }
   .sheet.open{bottom:0}
   .handle{width:48px;height:6px;background:rgba(255,255,255,0.06);border-radius:999px;margin:6px auto}
@@ -91,9 +137,9 @@
 
   .item-controls{display:flex;flex-direction:column;gap:8px;align-items:flex-end}
   .item-controls .qty-mini{display:flex;gap:6px;align-items:center}
-  .small-btn{padding:6px 8px;border-radius:8px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.02);font-weight:700;cursor:pointer}
+  .small-btn{padding:8px 10px;border-radius:10px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.02);font-weight:700;cursor:pointer;min-height:36px}
 
-  /* summary block — clean receipt style */
+  /* summary */
   .summary{
     padding:12px;border-radius:12px;background:linear-gradient(90deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));border:1px solid rgba(255,255,255,0.03);
     display:flex;flex-direction:column;gap:8px;
@@ -103,39 +149,47 @@
   .summary .total{display:flex;justify-content:space-between;align-items:center;font-size:18px;font-weight:900;margin-top:4px}
 
   .promo{display:flex;gap:8px;margin-top:8px}
-  .promo input{flex:1;padding:10px;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:inherit}
-  .apply-btn{padding:10px;border-radius:10px;border:0;background:linear-gradient(180deg, rgba(25,169,116,0.12), rgba(25,169,116,0.06));color:var(--accent-green);font-weight:800;cursor:pointer}
+  .promo input{flex:1;padding:10px;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:inherit;min-height:44px}
+  .apply-btn{padding:10px;border-radius:10px;border:0;background:linear-gradient(180deg, rgba(25,169,116,0.12), rgba(25,169,116,0.06));color:var(--accent-green);font-weight:800;cursor:pointer;min-height:44px}
 
   .promo-msg{font-size:13px;color:var(--muted);min-height:18px}
 
   .checkout{display:flex;flex-direction:column;gap:8px}
-  .checkout input, .checkout textarea, .checkout select{width:100%;padding:12px;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:inherit}
-  .confirm-row{display:flex;gap:8px;align-items:center}
-  .confirm-btn{flex:1;padding:14px;border-radius:12px;border:0;background:linear-gradient(180deg,var(--accent-green),var(--accent-green-2));color:white;font-weight:900;font-size:16px;cursor:pointer;box-shadow:var(--shadow-lg)}
-  .secondary-btn{padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:inherit;font-weight:800}
-
-  /* success receipt (after confirm) */
-  .receipt{
-    display:none;flex-direction:column;align-items:center;gap:12px;padding:18px;border-radius:12px;background:linear-gradient(180deg,#0f2b18,#08130b);border:1px solid rgba(25,169,116,0.12)
+  .checkout input, .checkout textarea, .checkout select{
+    width:100%;padding:12px;border-radius:12px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:inherit;min-height:44px;
   }
+  .confirm-row{display:flex;gap:8px;align-items:center}
+  .confirm-btn{flex:1;padding:14px;border-radius:12px;border:0;background:linear-gradient(180deg,var(--accent-green),var(--accent-green-2));color:white;font-weight:900;font-size:16px;cursor:pointer;box-shadow:var(--shadow-lg);min-height:48px}
+  .secondary-btn{padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:inherit;font-weight:800;min-height:48px}
+
+  /* success receipt */
+  .receipt{display:none;flex-direction:column;align-items:center;gap:12px;padding:18px;border-radius:12px;background:linear-gradient(180deg,#0f2b18,#08130b);border:1px solid rgba(25,169,116,0.12)}
   .receipt.show{display:flex}
 
-  .checkmark{
-    width:68px;height:68px;border-radius:999px;background:linear-gradient(180deg,var(--accent-green),var(--accent-green-2));display:flex;align-items:center;justify-content:center;box-shadow:0 12px 32px rgba(15,143,88,0.22)
-  }
+  .checkmark{width:68px;height:68px;border-radius:999px;background:linear-gradient(180deg,var(--accent-green),var(--accent-green-2));display:flex;align-items:center;justify-content:center;box-shadow:0 12px 32px rgba(15,143,88,0.22)}
   .checkmark svg{width:36px;height:36px;color:white}
 
   .muted-center{color:var(--muted);font-size:13px;text-align:center}
 
-  /* responsive: desktop 3-col */
+  /* bubble */
+  #bubble{position:fixed;right:20px;bottom:120px;background:var(--accent-green);color:#fff;padding:8px 12px;border-radius:16px;font-weight:900;box-shadow:var(--shadow-lg);opacity:0;transform:translateY(12px);transition:all .36s;z-index:1500;pointer-events:none}
+  #bubble[aria-hidden="false"]{pointer-events:auto}
+
+  /* focus and accessibility */
+  :focus{outline:3px solid rgba(25,169,116,0.14);outline-offset:3px;border-radius:8px}
+  button{font-family:inherit}
+
+  /* responsive desktop: 3-col layout */
   @media(min-width:920px){
-    .wrap{display:grid;grid-template-columns:1fr 360px;gap:14px;padding:18px}
+    .wrap{display:grid;grid-template-columns:1fr 360px;gap:18px;padding:18px calc(18px + env(safe-area-inset-right)) 140px calc(18px + env(safe-area-inset-left))}
     .menu{grid-column:1/2;grid-template-columns:repeat(3, minmax(0,1fr));gap:14px}
     .bottom-bar{display:none}
     .sheet{display:none}
   }
 
-  :focus{outline:3px solid rgba(25,169,116,0.12);outline-offset:3px;border-radius:8px}
+  /* prevent long words/breaking */
+  .desc, .lead, h1, .price, .muted, .meta { word-break: break-word; hyphens: auto; }
+
 </style>
 </head>
 <body>
@@ -144,19 +198,19 @@
       <div class="logo" aria-hidden="true"><div class="bolt">⚡️</div></div>
       <div>
         <h1>Hit⚡️Points</h1>
-        <div class="lead">Доставка — красивое оформление заказа</div>
+        <div class="lead">Кофе и выпечка — быстрая доставка</div>
       </div>
 
       <div class="top-actions" role="toolbar" aria-label="Доступные действия">
-        <button id="admin" class="icon-btn" title="Admin via Telegram" aria-label="Admin">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 12l7-8 5 5 4-2-8 11-8-6z" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <button id="admin" class="icon-btn" title="Admin via Telegram" aria-label="Открыть чат админа">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12l7-8 5 5 4-2-8 11-8-6z" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
       </div>
     </header>
 
     <div class="search" role="search">
-      <input id="q" placeholder="Поиск по меню (например: шаурма)" />
-      <div class="tag">Доставка</div>
+      <input id="q" placeholder="Поиск по меню (например: латте)" aria-label="Поиск по меню" />
+      <div class="tag" aria-hidden="true">Доставка</div>
     </div>
 
     <main>
@@ -165,15 +219,15 @@
   </div>
 
   <!-- floating add feedback -->
-  <div id="bubble" style="position:fixed;right:20px;bottom:120px;background:var(--accent-green);color:#fff;padding:8px 12px;border-radius:16px;font-weight:800;box-shadow:var(--shadow-lg);opacity:0;transform:translateY(12px);transition:all .36s;z-index:1500">Добавлено</div>
+  <div id="bubble" aria-live="polite" aria-hidden="true">Добавлено</div>
 
   <!-- bottom bar -->
   <div class="bottom-bar" id="bottomBar" role="region" aria-label="Корзина">
     <div class="cart-mini">
-      <div><div style="font-size:12px;color:var(--muted)">В корзине</div><div class="count" id="mini-count">0</div></div>
+      <div><div style="font-size:12px;color:var(--muted)">В корзине</div><div class="count" id="mini-count" aria-live="polite">0</div></div>
       <div style="flex:1"><div style="font-size:12px;color:var(--muted)">Итого</div><div class="sum" id="mini-sum">0 ₽</div></div>
     </div>
-    <button class="open-cart-btn" id="openSheet">Оформить заказ</button>
+    <button class="open-cart-btn" id="openSheet" aria-controls="sheet">Оформить заказ</button>
   </div>
 
   <!-- sheet -->
@@ -203,17 +257,17 @@
       <div class="total"><div>Итого к оплате</div><div id="final-total">0 ₽</div></div>
 
       <div class="promo" style="align-items:center">
-        <input id="promo" placeholder="Промокод (HIT10 — 10%)" />
+        <input id="promo" placeholder="Промокод (HIT10 — 10%)" aria-label="Промокод" />
         <button id="applyPromo" class="apply-btn">Применить</button>
       </div>
-      <div class="promo-msg" id="promo-msg"></div>
+      <div class="promo-msg" id="promo-msg" role="status" aria-live="polite"></div>
     </div>
 
     <div class="checkout">
-      <input id="name" placeholder="Имя получателя" />
-      <input id="phone" placeholder="Телефон (+7XXXXXXXXXX)" />
-      <textarea id="address" placeholder="Адрес доставки (улица, дом, подъезд, этаж)" rows="2"></textarea>
-      <select id="payment">
+      <input id="name" placeholder="Имя получателя" aria-label="Имя получателя" />
+      <input id="phone" placeholder="Телефон (+7XXXXXXXXXX)" aria-label="Телефон" />
+      <textarea id="address" placeholder="Адрес доставки (улица, дом, подъезд, этаж)" rows="2" aria-label="Адрес доставки"></textarea>
+      <select id="payment" aria-label="Способ оплаты">
         <option value="cash">Наличными</option>
         <option value="card">Картой при доставке</option>
       </select>
@@ -223,7 +277,7 @@
         <button id="clear" class="secondary-btn">Очистить</button>
       </div>
 
-      <div class="receipt" id="receipt">
+      <div class="receipt" id="receipt" role="status" aria-live="polite">
         <div class="checkmark" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
@@ -237,13 +291,16 @@
 /* CONFIG: замените BOT_USERNAME на ваш telegram-бот (без @) если нужно открыть чат */
 const BOT_USERNAME = 'HitPointsAdminBot'; // <-- поменяйте при необходимости
 
-/* Menu */
+/* Menu — кофейная тематика */
 const products = [
-  { id: 'shawarma', title: 'Сочная шаурма', price: 300, subtitle: 'Нежное мясо, свежие овощи, соус — взрыв вкуса!', img: 'https://picsum.photos/seed/shawarma/800/600' },
-  { id: 'burger', title: 'Эпические бургеры', price: 300, subtitle: 'Сочные котлеты, хрустящий салат и идеальная булочка', img: 'https://picsum.photos/seed/burger/800/600' },
-  { id: 'fries', title: 'Хрустящая картошка фри', price: 150, subtitle: 'Золотистая, хрустящая на каждом кусочке', img: 'https://picsum.photos/seed/fries/800/600' },
-  { id: 'hotdog', title: 'Классические хот-доги', price: 150, subtitle: 'Пикантные и сытные — заряд бодрости', img: 'https://picsum.photos/seed/hotdog/800/600' },
-  { id: 'drinks', title: 'Освежающие напитки', price: 20, subtitle: 'Газировка, лимонад — чтобы запить', img: 'https://picsum.photos/seed/drinks/800/600' }
+  { id: 'espresso', title: 'Эспрессо', price: 120, subtitle: 'Крепкий один шот, чистый аромат', img: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=espresso' },
+  { id: 'americano', title: 'Американо', price: 140, subtitle: 'Горячая вода и насыщенный эспрессо', img: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=americano' },
+  { id: 'latte', title: 'Латте', price: 240, subtitle: 'Мягкое молоко и бархатная пенка', img: 'https://images.unsplash.com/photo-1541167760496-1628856ab772?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=latte' },
+  { id: 'cappuccino', title: 'Капучино', price: 240, subtitle: 'Идеальный баланс кофе и молока', img: 'https://images.unsplash.com/photo-1511920170033-f8396924c348?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=cappuccino' },
+  { id: 'flatwhite', title: 'Флет уайт', price: 260, subtitle: 'Интенсивный вкус с баристой пенкой', img: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=flatwhite' },
+  { id: 'coldbrew', title: 'Cold Brew', price: 280, subtitle: 'Холодный настой — мягкий и терпкий', img: 'https://images.unsplash.com/photo-1498804103079-a6351b050096?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=coldbrew' },
+  { id: 'croissant', title: 'Круассан', price: 120, subtitle: 'Слойное тесто — тёплый и хрустящий', img: 'https://images.unsplash.com/photo-1506086679526-8c3b4570f74f?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=croissant' },
+  { id: 'muffin', title: 'Маффин', price: 110, subtitle: 'Вкусный десерт к кофе', img: 'https://images.unsplash.com/photo-1542801374-7d69f6b7b3c9?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=muffin' }
 ];
 
 const cart = {};
@@ -255,7 +312,7 @@ function $all(s, el=document){ return Array.from(el.querySelectorAll(s)) }
 function formatPrice(n){ return n.toLocaleString('ru-RU') + ' ₽' }
 function clamp(n, min, max){ return Math.max(min, Math.min(max, n)) }
 
-/* render product grid (2 per row) */
+/* render product grid */
 function renderMenu(list = products){
   const container = $('#menu');
   container.innerHTML = '';
@@ -270,22 +327,22 @@ function renderMenu(list = products){
             <h3>${p.title}</h3>
             <div class="desc">${p.subtitle}</div>
           </div>
-          <div style="text-align:right;flex:0 0 78px">
+          <div style="text-align:right;flex:0 0 88px">
             <div class="price">${formatPrice(p.price)}</div>
             <div style="font-size:12px;color:var(--muted);margin-top:6px">от ${p.price} р</div>
           </div>
         </div>
 
         <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px">
-          <div class="controls">
-            <div class="qty">
-              <button class="minus" data-id="${p.id}">−</button>
-              <div id="q-${p.id}" style="min-width:24px;text-align:center;font-weight:800">1</div>
-              <button class="plus" data-id="${p.id}">+</button>
+          <div class="controls" aria-hidden="false">
+            <div class="qty" role="group" aria-label="Количество">
+              <button class="minus" data-id="${p.id}" aria-label="уменьшить">−</button>
+              <div id="q-${p.id}" role="spinbutton" aria-valuemin="1" aria-valuemax="99" aria-valuenow="1" style="min-width:28px;text-align:center;font-weight:800">1</div>
+              <button class="plus" data-id="${p.id}" aria-label="увеличить">+</button>
             </div>
           </div>
           <div>
-            <button class="add-btn" data-add="${p.id}">Добавить</button>
+            <button class="add-btn" data-add="${p.id}" aria-label="Добавить в корзину: ${p.title}">Добавить</button>
           </div>
         </div>
       </div>
@@ -294,7 +351,7 @@ function renderMenu(list = products){
   });
 }
 
-/* cart UI update — fills sheet and bottom bar */
+/* cart UI update */
 function updateCartUI(){
   const ids = Object.keys(cart);
   const count = ids.reduce((s,i)=>s+cart[i].qty,0);
@@ -328,12 +385,12 @@ function updateCartUI(){
           <div class="muted">${formatPrice(it.price)} × ${it.qty} = <strong>${formatPrice(it.price * it.qty)}</strong></div>
         </div>
         <div class="item-controls">
-          <div class="qty-mini">
-            <button class="small-btn dec" data-id="${id}">−</button>
+          <div class="qty-mini" aria-hidden="false">
+            <button class="small-btn dec" data-id="${id}" aria-label="уменьшить ${it.title}">−</button>
             <div style="min-width:20px;text-align:center;font-weight:900">${it.qty}</div>
-            <button class="small-btn inc" data-id="${id}">+</button>
+            <button class="small-btn inc" data-id="${id}" aria-label="увеличить ${it.title}">+</button>
           </div>
-          <button class="small-btn remove" data-id="${id}" style="margin-top:6px">Удалить</button>
+          <button class="small-btn remove" data-id="${id}" style="margin-top:6px" aria-label="удалить ${it.title}">Удалить</button>
         </div>
       `;
       list.appendChild(node);
@@ -361,11 +418,12 @@ function addToCart(id){
   updateCartUI();
 }
 
-/* small bubble animation */
+/* bubble animation */
 let bubbleTimeout = null;
 function pulseBubble(text){
   const b = document.getElementById('bubble');
   b.textContent = text;
+  b.setAttribute('aria-hidden','false');
   b.style.transition = 'none';
   b.style.opacity = '0';
   b.style.transform = 'translateY(12px)';
@@ -378,6 +436,7 @@ function pulseBubble(text){
   bubbleTimeout = setTimeout(()=>{
     b.style.opacity = '0';
     b.style.transform = 'translateY(12px)';
+    b.setAttribute('aria-hidden','true');
   },900);
 }
 
@@ -406,7 +465,6 @@ function sendOrder(){
   const payment = $('#payment').value;
   if(!name || !phone || !address){ alert('Заполните имя, телефон и адрес доставки.'); return; }
 
-  // prepare numbers
   const ids = Object.keys(cart);
   const subTotal = ids.reduce((s,i)=>s + cart[i].qty * cart[i].price,0);
   const delivery = calcDelivery(subTotal);
@@ -420,28 +478,44 @@ function sendOrder(){
   });
   text += `\nПодытог: ${subTotal} ₽\nДоставка: ${delivery === 0 ? 'Бесплатно' : delivery + ' ₽'}\nСкидка: −${discount} ₽\n*Итого: ${total} ₽*\n\nПожалуйста, подтвердите заказ.`;
 
-  // show receipt UI immediately, then open share
   showReceipt();
-  // open Telegram share
   const share = 'https://t.me/share/url?url=&text=' + encodeURIComponent(text);
-  window.open(share,'_blank');
+  try {
+    window.open(share,'_blank');
+  } catch(e){
+    console.warn('Не удалось открыть окно шаринга:', e);
+  }
 }
 
 /* UX: show receipt block */
 function showReceipt(){
   const r = $('#receipt');
   r.classList.add('show');
-  // hide receipt after short time, keep sheet open for user to see
   setTimeout(()=>{ r.classList.remove('show'); }, 3500);
 }
 
 /* escape markdown for Telegram */
 function escapeMarkdown(s){ return s.replace(/([_*\\[\]()~`>#+\-=|{}.!])/g, '\\$1'); }
 
+/* handle body scroll lock when sheet open */
+let scrollPos = 0;
+function lockBody(){
+  scrollPos = window.scrollY || document.documentElement.scrollTop;
+  document.body.style.position = 'fixed';
+  document.body.style.top = `-${scrollPos}px`;
+  document.body.style.left = '0';
+  document.body.style.right = '0';
+}
+function unlockBody(){
+  document.body.style.position = '';
+  document.body.style.top = '';
+  window.scrollTo(0, scrollPos);
+}
+
 /* Event bindings */
 document.addEventListener('click', (e)=>{
-  const plus = e.target.closest('.plus'); if(plus){ const id = plus.dataset.id; const el = document.getElementById('q-'+id); el.textContent = Math.min(99, parseInt(el.textContent||'1')+1); return; }
-  const minus = e.target.closest('.minus'); if(minus){ const id = minus.dataset.id; const el = document.getElementById('q-'+id); el.textContent = Math.max(1, parseInt(el.textContent||'1')-1); return; }
+  const plus = e.target.closest('.plus'); if(plus){ const id = plus.dataset.id; const el = document.getElementById('q-'+id); const v = clamp(parseInt(el.textContent||'1',10)+1,1,99); el.textContent = v; el.setAttribute('aria-valuenow', v); return; }
+  const minus = e.target.closest('.minus'); if(minus){ const id = minus.dataset.id; const el = document.getElementById('q-'+id); const v = clamp(parseInt(el.textContent||'1',10)-1,1,99); el.textContent = v; el.setAttribute('aria-valuenow', v); return; }
 
   const add = e.target.closest('[data-add]'); if(add){ addToCart(add.dataset.add); openSheet(); return; }
 
@@ -475,8 +549,16 @@ $('#q').addEventListener('input', (e)=>{
 
 /* sheet open/close */
 const sheet = $('#sheet');
-function openSheet(){ sheet.classList.add('open'); sheet.setAttribute('aria-hidden','false'); }
-function closeSheet(){ sheet.classList.remove('open'); sheet.setAttribute('aria-hidden','true'); }
+function openSheet(){
+  sheet.classList.add('open');
+  sheet.setAttribute('aria-hidden','false');
+  lockBody();
+}
+function closeSheet(){
+  sheet.classList.remove('open');
+  sheet.setAttribute('aria-hidden','true');
+  unlockBody();
+}
 
 /* init */
 renderMenu();
