@@ -3,118 +3,114 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<title>Hit⚡️Points — Mobile</title>
-<link rel="icon" href="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3e%3crect width='100' height='100' rx='18' fill='%23161616'/%3e%3ctext x='50' y='57' font-size='36' fill='%2319a974' text-anchor='middle' font-family='Arial'%3e⚡️%3c/text%3e%3c/svg%3e">
+<title>Hit⚡️Points — Mobile (2-in-row)</title>
+<link rel="icon" href="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3e%3crect width='100' height='100' rx='18' fill='%23121212'/%3e%3ctext x='50' y='57' font-size='36' fill='%2319a974' text-anchor='middle' font-family='Arial'%3e⚡️%3c/text%3e%3c/svg%3e">
 <style>
   :root{
-    --bg:#0f0f10;
+    --bg:#0b0b0b;
     --card:#141414;
-    --muted:#9da6ad;
+    --muted:#98a2a8;
     --accent-green:#19a974;
     --accent-red:#ff4d4f;
     --glass: rgba(255,255,255,0.02);
-    --radius:16px;
+    --radius:14px;
     --btn-radius:14px;
-    --shadow-lg: 0 12px 30px rgba(0,0,0,0.6);
-    --shadow-sm: 0 6px 18px rgba(0,0,0,0.5);
+    --shadow-lg: 0 18px 40px rgba(0,0,0,0.6);
+    --shadow-sm: 0 8px 20px rgba(0,0,0,0.45);
     font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, "Helvetica Neue", Arial;
   }
 
-  /* Mobile-first layout */
-  html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg),#0b0b0b);color:#eef5f2;-webkit-font-smoothing:antialiased; -webkit-text-size-adjust:none;}
-  .wrap{max-width:720px;margin:0 auto;padding:14px 14px 100px;box-sizing:border-box}
+  html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg),#070707);color:#eef6f2;-webkit-font-smoothing:antialiased; -webkit-text-size-adjust:none;}
+  .wrap{max-width:920px;margin:0 auto;padding:14px 14px 120px;box-sizing:border-box}
 
-  header{
-    display:flex;align-items:center;gap:12px;margin-bottom:12px;
-  }
-  .logo{
-    width:56px;height:56px;border-radius:14px;background:linear-gradient(180deg,#1d1d1d,#141414);
-    display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-sm);
-    flex:0 0 56px;
-  }
+  /* Header */
+  header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+  .logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(180deg,#1e1e1e,#141414);display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-sm);flex:0 0 56px}
   .bolt{font-size:22px;color:var(--accent-green)}
   h1{margin:0;font-size:18px}
-  p.lead{margin:0;font-size:13px;color:var(--muted)}
+  .lead{margin:0;font-size:13px;color:var(--muted)}
 
   .top-actions{margin-left:auto;display:flex;gap:8px;align-items:center}
-  .icon-btn{
-    width:44px;height:44px;border-radius:12px;background:var(--glass);display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,0.03);
-    box-shadow:var(--shadow-sm);cursor:pointer
-  }
+  .icon-btn{width:46px;height:44px;border-radius:12px;background:var(--glass);display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,0.03);box-shadow:var(--shadow-sm);cursor:pointer}
   .admin-btn{padding:8px 12px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03);font-weight:700;display:inline-flex;align-items:center;gap:8px;cursor:pointer}
 
-  /* Search / filter placeholder */
-  .search{
-    margin:10px 0 16px;display:flex;gap:8px;align-items:center;
-  }
-  .search input{
-    flex:1;padding:12px;border-radius:12px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:inherit;font-size:15px;
-  }
-  .tag{padding:8px 10px;border-radius:12px;background:rgba(255,255,255,0.02);font-weight:700;font-size:13px;border:1px solid rgba(255,255,255,0.02)}
+  /* Search and tag */
+  .search{margin:10px 0 14px;display:flex;gap:8px;align-items:center}
+  .search input{flex:1;padding:12px;border-radius:12px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:inherit;font-size:15px}
+  .tag{padding:8px 10px;border-radius:12px;background:rgba(255,255,255,0.02);font-weight:700;font-size:13px}
 
-  /* Product cards */
-  .menu{display:flex;flex-direction:column;gap:14px}
+  /* 2-column menu grid */
+  .menu{display:grid;grid-template-columns:repeat(2, 1fr);gap:12px}
+  @media (min-width:920px){ .menu{grid-template-columns:repeat(3,1fr)} }
+
   .card{
-    background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,0.03);
-    box-shadow:var(--shadow-sm);
+    background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));
+    border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.03);box-shadow:var(--shadow-sm);display:flex;flex-direction:column;
+    min-height:240px;
   }
-  .card .img{
-    width:100%;height:190px;object-fit:cover;display:block;
-    background-position:center center;background-size:cover;
-  }
-  .card .body{padding:12px;display:flex;flex-direction:column;gap:10px}
-  .card h3{margin:0;font-size:16px}
-  .desc{font-size:13px;color:var(--muted);line-height:1.3}
+  .card .img{width:100%;height:130px;background-position:center center;background-size:cover}
+  .card .body{padding:10px;display:flex;flex-direction:column;gap:8px}
+  .card h3{margin:0;font-size:15px}
+  .desc{font-size:13px;color:var(--muted);line-height:1.25}
   .row{display:flex;align-items:center;justify-content:space-between;gap:8px}
 
-  /* big iOS-like controls */
+  .price{font-weight:900;font-size:15px;color:var(--accent-green)}
+
+  /* controls */
   .controls{display:flex;gap:8px;align-items:center}
-  .qty{
-    display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.02);padding:6px;border-radius:12px;border:1px solid rgba(255,255,255,0.02);
-  }
-  .qty button{width:36px;height:36px;border-radius:10px;border:0;background:transparent;font-size:18px;font-weight:800;color:inherit;cursor:pointer}
-  .add-btn{
-    padding:12px 14px;border-radius:14px;font-weight:800;border:0;background:linear-gradient(180deg, rgba(25,169,116,0.14), rgba(25,169,116,0.08));color:var(--accent-green);
-    min-width:120px;text-align:center;box-shadow:var(--shadow-sm);font-size:15px;cursor:pointer;
-  }
+  .qty{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.02);padding:6px;border-radius:10px;border:1px solid rgba(255,255,255,0.02)}
+  .qty button{width:34px;height:34px;border-radius:10px;border:0;background:transparent;font-size:18px;font-weight:800;color:inherit;cursor:pointer}
+  .add-btn{padding:10px 12px;border-radius:12px;font-weight:800;border:0;background:linear-gradient(180deg, rgba(25,169,116,0.14), rgba(25,169,116,0.08));color:var(--accent-green);min-width:86px;text-align:center;box-shadow:var(--shadow-sm);cursor:pointer}
 
-  /* bottom cart bar (mobile) */
-  .bottom-bar{
-    position:fixed;left:12px;right:12px;bottom:16px;background:linear-gradient(180deg,var(--card),#0f0f10);
-    border-radius:16px;padding:10px 12px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow-lg);z-index:1200;border:1px solid rgba(255,255,255,0.03);
+  /* Add animation bubble */
+  .anim-bubble{
+    position:fixed;right:22px;bottom:92px;background:var(--accent-green);color:white;padding:8px 12px;border-radius:18px;font-weight:800;box-shadow:var(--shadow-lg);transform:translateY(12px);opacity:0;transition:all .48s cubic-bezier(.2,.9,.25,1);
+    z-index:1600;pointer-events:none;
   }
+  .anim-bubble.show{transform:translateY(0);opacity:1}
+
+  /* bottom bar */
+  .bottom-bar{position:fixed;left:12px;right:12px;bottom:16px;background:linear-gradient(180deg,var(--card),#0f0f0f);border-radius:16px;padding:10px 12px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow-lg);z-index:1200;border:1px solid rgba(255,255,255,0.03)}
   .cart-mini{display:flex;gap:10px;align-items:center;flex:1}
-  .cart-mini .count{background:rgba(255,255,255,0.03);padding:8px 10px;border-radius:12px;font-weight:800}
-  .cart-mini .sum{font-weight:900;font-size:16px}
-  .open-cart-btn{padding:10px 14px;border-radius:12px;background:linear-gradient(180deg, rgba(25,169,116,0.12), rgba(25,169,116,0.06));border:1px solid rgba(25,169,116,0.14);font-weight:800;color:var(--accent-green);cursor:pointer;box-shadow:var(--shadow-sm)}
+  .count{background:rgba(255,255,255,0.03);padding:8px 10px;border-radius:12px;font-weight:900}
+  .sum{font-weight:900;font-size:16px}
+  .open-cart-btn{padding:10px 14px;border-radius:12px;background:linear-gradient(180deg, var(--accent-green), #14955a);border:0;color:white;font-weight:900;cursor:pointer;box-shadow:var(--shadow-sm)}
 
-  /* bottom sheet cart */
-  .sheet{
-    position:fixed;left:0;right:0;bottom:-100%;height:72vh;background:linear-gradient(180deg,var(--card),#0f0f10);border-top-left-radius:16px;border-top-right-radius:16px;box-shadow:0 -12px 40px rgba(0,0,0,0.6);z-index:1300;transition:bottom .32s cubic-bezier(.2,.9,.25,1);
-    display:flex;flex-direction:column;padding:14px;gap:12px;
-  }
+  /* sheet (order) */
+  .sheet{position:fixed;left:0;right:0;bottom:-100%;height:78vh;background:linear-gradient(180deg,var(--card),#0b0b0b);border-top-left-radius:16px;border-top-right-radius:16px;box-shadow:0 -18px 48px rgba(0,0,0,0.7);z-index:1300;transition:bottom .36s cubic-bezier(.2,.9,.25,1);display:flex;flex-direction:column;padding:12px;gap:12px}
   .sheet.open{bottom:0}
-  .sheet .handle{width:44px;height:6px;background:rgba(255,255,255,0.06);border-radius:999px;margin:6px auto}
-  .sheet .list{overflow:auto;flex:1;display:flex;flex-direction:column;gap:10px;padding-bottom:6px}
-  .sheet .checkout{display:flex;flex-direction:column;gap:8px}
-  .sheet .big-action{padding:12px;border-radius:12px;border:0;font-weight:900;background:linear-gradient(180deg,var(--accent-green),#14955a);color:white;cursor:pointer}
+  .handle{width:48px;height:6px;background:rgba(255,255,255,0.06);border-radius:999px;margin:6px auto}
+  .sheet .list{overflow:auto;flex:1;display:flex;flex-direction:column;gap:10px;padding:4px 2px}
 
-  /* empty state */
+  .sheet .item{display:flex;gap:10px;align-items:center;padding:8px;border-radius:10px;background:rgba(255,255,255,0.01);border:1px solid rgba(255,255,255,0.02)}
+  .sheet .item img{width:72px;height:56px;object-fit:cover;border-radius:8px}
+  .sheet .meta{flex:1}
+  .sheet .meta strong{display:block}
+  .sheet .meta .muted{color:var(--muted);font-size:13px;margin-top:6px}
+
+  .summary{padding:10px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));border:1px solid rgba(255,255,255,0.03)}
+  .summary .row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+  .promo{display:flex;gap:8px;margin-top:8px}
+  .promo input{flex:1;padding:10px;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:inherit}
+  .apply-btn{padding:10px;border-radius:10px;border:0;background:linear-gradient(180deg, rgba(25,169,116,0.12), rgba(25,169,116,0.06));color:var(--accent-green);font-weight:800;cursor:pointer}
+
+  .checkout{display:flex;flex-direction:column;gap:8px}
+  .checkout input, .checkout textarea, .checkout select{width:100%;padding:12px;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:inherit}
+  .confirm-btn{padding:14px;border-radius:12px;border:0;background:linear-gradient(180deg,var(--accent-green),#0f9b5f);color:white;font-weight:900;font-size:16px;cursor:pointer;box-shadow:var(--shadow-lg)}
+  .danger-btn{padding:10px;border-radius:10px;border:0;background:linear-gradient(180deg, rgba(255,77,79,0.12), rgba(255,77,79,0.06));color:var(--accent-red);font-weight:800;cursor:pointer}
+
   .empty{padding:18px;border-radius:12px;background:linear-gradient(90deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));color:var(--muted);text-align:center}
 
-  /* desktop fallback (wider screens) */
-  @media (min-width:720px){
-    .wrap{display:grid;grid-template-columns:1fr 360px;gap:18px;padding:20px}
-    .menu{grid-column:1/2;}
+  /* desktop fallback */
+  @media (min-width:920px){
+    .wrap{display:grid;grid-template-columns:1fr 360px;gap:14px;padding:24px}
+    .menu{grid-column:1/2}
     .bottom-bar{display:none}
     .sheet{display:none}
-    .cart-panel{
-      position:sticky;top:28px;background:linear-gradient(180deg,var(--card),#171717);padding:16px;border-radius:14px;height:max-content;border:1px solid rgba(255,255,255,0.03)
-    }
   }
 
-  /* Accessibility focus */
-  :focus{outline:3px solid rgba(25,169,116,0.18);outline-offset:3px;border-radius:8px}
+  /* focus */
+  :focus{outline:3px solid rgba(25,169,116,0.14);outline-offset:3px;border-radius:8px}
 </style>
 </head>
 <body>
@@ -123,50 +119,45 @@
       <div class="logo" aria-hidden="true"><div class="bolt">⚡️</div></div>
       <div>
         <h1>Hit⚡️Points</h1>
-        <p class="lead">Мини-меню — доставка по городу</p>
+        <div class="lead">Доставка — тёмный стиль, крупные кнопки</div>
       </div>
-
       <div class="top-actions" role="toolbar" aria-label="Доступные действия">
-        <button id="admin" class="icon-btn" aria-label="Открыть админ в Telegram" title="Admin via Telegram">
+        <button id="admin" class="icon-btn" title="Admin via Telegram" aria-label="Admin">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 12l7-8 5 5 4-2-8 11-8-6z" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
-        <button id="openCartDesktop" class="admin-btn" style="display:none">Корзина</button>
+        <button id="viewCartDesktop" class="admin-btn" style="display:none">Корзина</button>
       </div>
     </header>
 
     <div class="search" role="search">
-      <input id="q" placeholder="Поиск по меню (напр. шаурма)" />
+      <input id="q" placeholder="Поиск по меню (например: шаурма)" />
       <div class="tag">Доставка</div>
     </div>
 
     <main>
-      <section class="menu" id="menu" aria-live="polite">
-        <!-- JS inject -->
-      </section>
+      <section class="menu" id="menu" aria-live="polite"></section>
     </main>
-
-    <!-- Desktop cart panel (hidden on mobile) -->
-    <aside id="cartPanel" class="cart-panel" style="display:none">
-      <!-- injected on wide screens -->
-    </aside>
   </div>
 
-  <!-- bottom bar for mobile -->
-  <div class="bottom-bar" id="bottomBar" aria-hidden="false" role="region" aria-label="Корзина">
+  <!-- floating bubble -->
+  <div id="bubble" class="anim-bubble" aria-hidden="true">Добавлено</div>
+
+  <!-- bottom bar -->
+  <div class="bottom-bar" id="bottomBar" role="region" aria-label="Корзина">
     <div class="cart-mini">
       <div><div style="font-size:12px;color:var(--muted)">В корзине</div><div class="count" id="mini-count">0</div></div>
       <div style="flex:1"><div style="font-size:12px;color:var(--muted)">Итого</div><div class="sum" id="mini-sum">0 ₽</div></div>
     </div>
-    <button class="open-cart-btn" id="openSheet">Открыть</button>
+    <button class="open-cart-btn" id="openSheet">Оформить</button>
   </div>
 
-  <!-- bottom sheet -->
-  <div class="sheet" id="sheet" aria-hidden="true" role="dialog" aria-label="Просмотр корзины">
-    <div class="handle" id="sheetHandle" role="button" aria-label="Закрыть/открыть"></div>
+  <!-- sheet -->
+  <div class="sheet" id="sheet" aria-hidden="true" role="dialog" aria-label="Оформление заказа">
+    <div class="handle" id="sheetHandle" role="button" aria-label="Закрыть/Открыть"></div>
     <div style="display:flex;justify-content:space-between;align-items:center">
       <div>
-        <strong style="font-size:16px">Ваша корзина</strong>
-        <div style="font-size:13px;color:var(--muted)">Проверьте и подтвердите заказ</div>
+        <strong style="font-size:16px">Оформление заказа</strong>
+        <div style="font-size:13px;color:var(--muted)">Проверьте состав и данные доставки</div>
       </div>
       <div style="text-align:right">
         <div style="font-weight:900" id="sheet-total">0 ₽</div>
@@ -178,28 +169,43 @@
       <div class="empty">Корзина пуста — добавьте что-нибудь вкусное.</div>
     </div>
 
+    <div class="summary" id="summary">
+      <div class="row"><div class="muted">Подытог</div><div id="sub-total" style="font-weight:800">0 ₽</div></div>
+      <div class="row"><div class="muted">Доставка</div><div id="delivery-fee" style="font-weight:800">—</div></div>
+      <div class="row"><div class="muted">Скидка</div><div id="discount" style="font-weight:800">0 ₽</div></div>
+      <div style="height:1px;background:rgba(255,255,255,0.03);margin:8px 0;border-radius:2px"></div>
+      <div class="row"><div style="font-weight:900">Итого</div><div id="final-total" style="font-weight:900;font-size:18px">0 ₽</div></div>
+
+      <div class="promo">
+        <input id="promo" placeholder="Промокод (например: HIT10 — 10% скидки)" />
+        <button id="applyPromo" class="apply-btn">Применить</button>
+      </div>
+      <div id="promo-msg" style="font-size:13px;color:var(--muted);margin-top:6px"></div>
+    </div>
+
     <div class="checkout">
       <input id="name" placeholder="Имя получателя" />
       <input id="phone" placeholder="Телефон (+7xxxxxxxxxx)" />
-      <textarea id="address" placeholder="Адрес доставки (улица, дом, подъезд)"></textarea>
+      <textarea id="address" placeholder="Адрес доставки (улица, дом, подъезд, этаж)"></textarea>
       <select id="payment">
         <option value="cash">Наличными</option>
         <option value="card">Картой при доставке</option>
       </select>
 
-      <button id="sendOrder" class="big-action">Отправить в Telegram</button>
+      <button id="confirm" class="confirm-btn">Подтвердить и отправить в Telegram</button>
       <div style="display:flex;gap:8px">
-        <button id="clear" class="admin-btn" style="flex:1">Очистить</button>
-        <button id="closeSheet" class="icon-btn" aria-label="Закрыть">✕</button>
+        <button id="clear" class="danger-btn" style="flex:1">Очистить корзину</button>
+        <button id="close" class="icon-btn" aria-label="Закрыть">✕</button>
       </div>
     </div>
   </div>
 
 <script>
-/* ========== Настройки ========== */
-/* Замените на username вашего бота (без @) */
-const BOT_USERNAME = 'HitPointsAdminBot'; // <-- поменяйте сюда
-/* ================================== */
+/* ========== Настройки ==========
+   Замените на username вашего бота (без @) для кнопки Admin.
+   ================================= */
+const BOT_USERNAME = 'HitPointsAdminBot'; // <-- поменяйте
+/* ================================= */
 
 const products = [
   { id: 'shawarma', title: 'Сочная шаурма', price: 300, subtitle: 'Нежное мясо, свежие овощи, соус, который взорвёт ваши вкусовые рецепторы!', img: 'https://picsum.photos/seed/shawarma/800/600' },
@@ -210,12 +216,15 @@ const products = [
 ];
 
 const cart = {}; // { id: { ...product, qty } }
+let promoApplied = { code: null, percent: 0 };
 
-function $(s, el=document){return el.querySelector(s)}
-function $all(s, el=document){return Array.from(el.querySelectorAll(s))}
+/* helpers */
+function $(s, el=document){ return el.querySelector(s) }
+function $all(s, el=document){ return Array.from(el.querySelectorAll(s)) }
 function formatPrice(n){ return n.toLocaleString('ru-RU') + ' ₽' }
+function clamp(n,min,max){ return Math.max(min, Math.min(max, n)) }
 
-/* Render products (mobile-first single column) */
+/* render menu 2-in-row */
 function renderMenu(list = products){
   const container = $('#menu');
   container.innerHTML = '';
@@ -230,8 +239,8 @@ function renderMenu(list = products){
             <h3>${p.title}</h3>
             <div class="desc">${p.subtitle}</div>
           </div>
-          <div style="text-align:right;flex:0 0 90px">
-            <div style="font-weight:900;font-size:16px">${formatPrice(p.price)}</div>
+          <div style="text-align:right;flex:0 0 78px">
+            <div class="price">${formatPrice(p.price)}</div>
             <div style="font-size:12px;color:var(--muted);margin-top:6px">от ${p.price} р</div>
           </div>
         </div>
@@ -244,7 +253,6 @@ function renderMenu(list = products){
               <button class="plus" data-id="${p.id}" aria-label="увеличить">+</button>
             </div>
           </div>
-
           <div style="margin-left:auto">
             <button class="add-btn" data-add="${p.id}">Добавить</button>
           </div>
@@ -255,16 +263,24 @@ function renderMenu(list = products){
   });
 }
 
-/* Cart UI updates for both mini and sheet */
+/* cart UI */
 function updateCartUI(){
   const ids = Object.keys(cart);
   const miniCount = ids.reduce((s,i)=>s+cart[i].qty,0);
-  const total = ids.reduce((s,i)=>s+cart[i].qty * cart[i].price,0);
+  const subTotal = ids.reduce((s,i)=>s + cart[i].qty * cart[i].price, 0);
+  const delivery = calcDelivery(subTotal);
+  const discount = Math.round(subTotal * (promoApplied.percent/100));
+  const final = Math.max(0, subTotal + delivery - discount);
 
   $('#mini-count').textContent = miniCount;
-  $('#mini-sum').textContent = formatPrice(total);
-  $('#sheet-total').textContent = formatPrice(total);
-  $('#sheet-count').textContent = `${miniCount} ${pluralize(miniCount, 'товар','товара','товаров')}`;
+  $('#mini-sum').textContent = formatPrice(final);
+  $('#sheet-total').textContent = formatPrice(final);
+  $('#sheet-count').textContent = `${miniCount} ${pluralize(miniCount,'товар','товара','товаров')}`;
+
+  $('#sub-total').textContent = formatPrice(subTotal);
+  $('#delivery-fee').textContent = delivery === 0 ? 'Бесплатно' : formatPrice(delivery);
+  $('#discount').textContent = (discount>0) ? `− ${formatPrice(discount)}` : '0 ₽';
+  $('#final-total').textContent = formatPrice(final);
 
   // sheet list
   const list = $('#sheet-list');
@@ -275,12 +291,12 @@ function updateCartUI(){
     ids.forEach(id=>{
       const it = cart[id];
       const el = document.createElement('div');
-      el.style.display = 'flex'; el.style.gap = '10px'; el.style.alignItems='center';
+      el.className = 'item';
       el.innerHTML = `
-        <img src="${it.img}" style="width:72px;height:56px;object-fit:cover;border-radius:8px" alt="${it.title}">
-        <div style="flex:1">
-          <div style="font-weight:800">${it.title}</div>
-          <div style="color:var(--muted);font-size:13px">${formatPrice(it.price)} × ${it.qty} = <strong>${formatPrice(it.price * it.qty)}</strong></div>
+        <img src="${it.img}" alt="${it.title}">
+        <div class="meta">
+          <strong>${it.title}</strong>
+          <div class="muted">${formatPrice(it.price)} × ${it.qty} = <strong>${formatPrice(it.price * it.qty)}</strong></div>
         </div>
         <div style="display:flex;flex-direction:column;gap:8px">
           <div style="display:flex;gap:6px">
@@ -293,87 +309,83 @@ function updateCartUI(){
       list.appendChild(el);
     });
   }
-
-  // desktop cart panel (if visible)
-  if(window.innerWidth >= 720){
-    const panel = $('#cartPanel');
-    if(panel){
-      if(ids.length === 0){
-        panel.innerHTML = '<div class="empty">Корзина пуста</div>';
-      } else {
-        let html = '<div style="font-weight:900;margin-bottom:10px">Корзина</div>';
-        ids.forEach(id=>{
-          const it = cart[id];
-          html += `<div style="display:flex;gap:10px;align-items:center;margin-bottom:8px">
-            <img src="${it.img}" style="width:72px;height:56px;object-fit:cover;border-radius:8px">
-            <div style="flex:1"><strong>${it.title}</strong><div style="color:var(--muted);font-size:13px">${formatPrice(it.price)} × ${it.qty}</div></div>
-            <div style="font-weight:900">${formatPrice(it.price * it.qty)}</div>
-          </div>`;
-        });
-        html += `<div style="margin-top:8px;border-top:1px dashed rgba(255,255,255,0.03);padding-top:8px;display:flex;justify-content:space-between"><div style="color:var(--muted)">Итого</div><div style="font-weight:900">${formatPrice(total)}</div></div>`;
-        panel.innerHTML = html;
-      }
-    }
-  }
 }
 
-/* add to cart using qty in card */
-function addToCart(id){
-  const qEl = document.getElementById('q-'+id);
-  const qty = qEl ? Math.max(1, parseInt(qEl.textContent||'1',10)) : 1;
-  const p = products.find(x=>x.id===id);
-  if(!p) return;
-  if(cart[id]) cart[id].qty += qty;
-  else cart[id] = { ...p, qty };
-  updateCartUI();
-}
-
-/* helpers */
+/* utility: russian plural */
 function pluralize(n,a,b,c){
-  // simple russian pluralization for 1/2-4/5+
-  n = Math.abs(n)%100;
-  const n1 = n%10;
+  n = Math.abs(n)%100; const n1 = n%10;
   if(n>10 && n<20) return c;
   if(n1>1 && n1<5) return b;
   if(n1==1) return a;
   return c;
 }
 
-/* Events */
+/* delivery calc: free over 500 */
+function calcDelivery(subTotal){
+  if(subTotal === 0) return 0;
+  return subTotal >= 500 ? 0 : 100;
+}
+
+/* add to cart */
+function addToCart(id){
+  const qEl = document.getElementById('q-'+id);
+  const qty = qEl ? clamp(parseInt(qEl.textContent||'1',10),1,99) : 1;
+  const p = products.find(x=>x.id===id);
+  if(!p) return;
+  if(cart[id]) cart[id].qty = clamp(cart[id].qty + qty, 1, 99);
+  else cart[id] = { ...p, qty };
+  showBubble('Добавлено в корзину');
+  updateCartUI();
+}
+
+/* minor UI helpers */
+function showBubble(text){
+  const b = $('#bubble');
+  b.textContent = text;
+  b.classList.add('show');
+  setTimeout(()=> b.classList.remove('show'), 900);
+}
+
+/* Event handlers */
 document.addEventListener('click', (e)=>{
-  // plus/minus inside cards
-  const plus = e.target.closest('.plus');
-  if(plus){ const id = plus.dataset.id; const el = document.getElementById('q-'+id); el.textContent = Math.min(99, parseInt(el.textContent||'1')+1); return; }
-  const minus = e.target.closest('.minus');
-  if(minus){ const id = minus.dataset.id; const el = document.getElementById('q-'+id); el.textContent = Math.max(1, parseInt(el.textContent||'1')-1); return; }
+  const plus = e.target.closest('.plus'); if(plus){ const id=plus.dataset.id; const el=document.getElementById('q-'+id); el.textContent = Math.min(99, parseInt(el.textContent||'1')+1); return; }
+  const minus = e.target.closest('.minus'); if(minus){ const id=minus.dataset.id; const el=document.getElementById('q-'+id); el.textContent = Math.max(1, parseInt(el.textContent||'1')-1); return; }
 
-  const add = e.target.closest('[data-add]');
-  if(add){ addToCart(add.dataset.add); openSheet(); return; }
+  const add = e.target.closest('[data-add]'); if(add){ addToCart(add.dataset.add); openSheet(); return; }
 
-  // sheet controls
+  const inc = e.target.closest('.inc'); if(inc){ const id=inc.dataset.id; if(cart[id]) cart[id].qty = clamp(cart[id].qty+1,1,99); updateCartUI(); return; }
+  const dec = e.target.closest('.dec'); if(dec){ const id=dec.dataset.id; if(cart[id]) cart[id].qty = clamp(cart[id].qty-1,1,99); updateCartUI(); return; }
+  const rem = e.target.closest('.remove'); if(rem){ const id=rem.dataset.id; delete cart[id]; updateCartUI(); return; }
+
   if(e.target.closest('#openSheet')){ openSheet(); return; }
-  if(e.target.closest('#closeSheet') || e.target.closest('#sheetHandle')){ closeSheet(); return; }
-  if(e.target.closest('#clear')){ for(const k in cart) delete cart[k]; updateCartUI(); return; }
+  if(e.target.closest('#close') || e.target.closest('#sheetHandle')){ closeSheet(); return; }
+  if(e.target.closest('#clear')){ for(const k in cart) delete cart[k]; promoApplied = { code: null, percent: 0 }; $('#promo').value=''; $('#promo-msg').textContent=''; updateCartUI(); return; }
 
-  // sheet inc/dec/remove
-  const inc = e.target.closest('.inc'); if(inc){ const id = inc.dataset.id; if(cart[id]) cart[id].qty = Math.min(99, cart[id].qty + 1); updateCartUI(); return; }
-  const dec = e.target.closest('.dec'); if(dec){ const id = dec.dataset.id; if(cart[id]) cart[id].qty = Math.max(1, cart[id].qty - 1); updateCartUI(); return; }
-  const rem = e.target.closest('.remove'); if(rem){ const id = rem.dataset.id; delete cart[id]; updateCartUI(); return; }
-
-  // admin open
   if(e.target.closest('#admin')){
-    if(!BOT_USERNAME || BOT_USERNAME.includes(' ')) { alert('Укажите BOT_USERNAME в коде.'); return; }
-    const deep = `tg://resolve?domain=${BOT_USERNAME}`;
-    const web = `https://t.me/${BOT_USERNAME}`;
-    // try to open tg://, fallback to https
-    const w = window.open(deep,'_blank');
-    if(!w) setTimeout(()=>window.open(web,'_blank'),300);
+    if(!BOT_USERNAME || BOT_USERNAME.includes(' ')){ alert('Укажите BOT_USERNAME в коде.'); return; }
+    const deep = `tg://resolve?domain=${BOT_USERNAME}`; const web = `https://t.me/${BOT_USERNAME}`;
+    const w = window.open(deep,'_blank'); if(!w) setTimeout(()=>window.open(web,'_blank'),300);
     return;
   }
 });
 
-/* send order */
-$('#sendOrder').addEventListener('click', ()=>{
+/* Promo apply */
+$('#applyPromo').addEventListener('click', ()=>{
+  const code = $('#promo').value.trim().toUpperCase();
+  if(!code){ $('#promo-msg').textContent = 'Введите промокод.'; return; }
+  // Simple demo: HIT10 => 10% discount
+  if(code === 'HIT10'){
+    promoApplied = { code: 'HIT10', percent: 10 };
+    $('#promo-msg').textContent = 'Промокод применён — 10% скидка!';
+  } else {
+    promoApplied = { code: null, percent: 0 };
+    $('#promo-msg').textContent = 'Промокод не найден.';
+  }
+  updateCartUI();
+});
+
+/* Send order */
+$('#confirm').addEventListener('click', ()=>{
   if(Object.keys(cart).length === 0){ alert('Корзина пуста — добавьте товары.'); return; }
   const name = $('#name').value.trim();
   const phone = $('#phone').value.trim();
@@ -381,25 +393,33 @@ $('#sendOrder').addEventListener('click', ()=>{
   const payment = $('#payment').value;
   if(!name || !phone || !address){ alert('Заполните имя, телефон и адрес доставки.'); return; }
 
-  let text = `Заказ из Hit⚡️Points\nИмя: ${name}\nТелефон: ${phone}\nАдрес: ${address}\nОплата: ${payment}\n\nСостав:\n`;
-  let total = 0;
-  for(const k of Object.keys(cart)){
-    const it = cart[k];
-    text += `• ${it.title} — ${it.qty} × ${it.price} = ${it.qty * it.price} ₽\n`;
-    total += it.qty * it.price;
-  }
-  text += `\nИтого: ${total} ₽\n\nПожалуйста, подтвердите заказ.`;
-  // open tg share
+  const ids = Object.keys(cart);
+  let subTotal = ids.reduce((s,i)=>s + cart[i].qty * cart[i].price,0);
+  const delivery = calcDelivery(subTotal);
+  const discount = Math.round(subTotal * (promoApplied.percent/100));
+  const total = Math.max(0, subTotal + delivery - discount);
+
+  // Build pretty text for Telegram
+  let text = `📍 *Hit⚡️Points — Новый заказ*\n\n*Имя:* ${escapeMarkdown(name)}\n*Телефон:* ${escapeMarkdown(phone)}\n*Адрес:* ${escapeMarkdown(address)}\n*Оплата:* ${escapeMarkdown(payment)}\n\n*Состав:*\n`;
+  ids.forEach(id=>{
+    const it = cart[id];
+    text += `• ${escapeMarkdown(it.title)} — ${it.qty} × ${it.price} = ${it.qty * it.price} ₽\n`;
+  });
+  text += `\nПодытог: ${subTotal} ₽\nДоставка: ${delivery === 0 ? 'Бесплатно' : delivery + ' ₽'}\nСкидка: −${discount} ₽\n*Итого: ${total} ₽*\n\nПожалуйста, подтвердите заказ.`;
+  // share via t.me
   const share = 'https://t.me/share/url?url=&text=' + encodeURIComponent(text);
-  window.open(share, '_blank');
+  window.open(share,'_blank');
 });
 
-/* sheet open/close logic */
+/* escape for markdown (basic) */
+function escapeMarkdown(s){ return s.replace(/([_*\\[\]()~`>#+\-=|{}.!])/g, '\\$1'); }
+
+/* sheet open/close */
 const sheet = $('#sheet');
 function openSheet(){ sheet.classList.add('open'); sheet.setAttribute('aria-hidden','false'); }
 function closeSheet(){ sheet.classList.remove('open'); sheet.setAttribute('aria-hidden','true'); }
 
-/* simple search filter */
+/* search */
 $('#q').addEventListener('input', (e)=>{
   const v = e.target.value.trim().toLowerCase();
   if(!v) return renderMenu(products);
@@ -407,29 +427,29 @@ $('#q').addEventListener('input', (e)=>{
   renderMenu(filtered);
 });
 
-/* init render and responsive hooks */
+/* init */
 renderMenu();
 updateCartUI();
 
+/* responsive: show desktop cart button for wide screens */
 function handleResize(){
-  if(window.innerWidth >= 720){
-    // show desktop cart panel
-    const panel = $('#cartPanel');
-    if(panel){ panel.style.display = 'block'; document.getElementById('openCartDesktop').style.display='inline-flex'; document.getElementById('bottomBar').style.display='none'; }
+  if(window.innerWidth >= 920){
+    $('#viewCartDesktop').style.display = 'inline-flex';
+    $('#viewCartDesktop').addEventListener('click', ()=> openSheet());
+    $('#bottomBar').style.display = 'none';
   } else {
-    const panel = $('#cartPanel'); if(panel) panel.style.display = 'none'; document.getElementById('openCartDesktop').style.display='none'; document.getElementById('bottomBar').style.display='flex';
+    $('#viewCartDesktop').style.display = 'none';
+    $('#bottomBar').style.display = 'flex';
   }
 }
 window.addEventListener('resize', handleResize);
 handleResize();
 
-/* Accessibility small helpers */
-document.addEventListener('keydown', (e)=>{
-  if(e.key === 'Escape'){ closeSheet(); }
-});
+/* small accessibility: esc closes sheet */
+document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeSheet(); });
 
-/* Initial focus UX for iOS feel */
-setTimeout(()=>{ try{ if(window.navigator && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) window.scrollTo(0,0); }catch(e){} },100);
+/* small UX: focus top on mobile */
+setTimeout(()=>{ try{ if(window.navigator && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) window.scrollTo(0,0); }catch(e){} },150);
 </script>
 </body>
 </html>
