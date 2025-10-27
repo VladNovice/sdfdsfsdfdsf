@@ -1,1284 +1,406 @@
 <!doctype html>
 <html lang="ru">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>Hit⚡️Points — Coffee Mini App</title>
-<style>
-  :root {
-    --bg: #0b0b0b;
-    --card: #151515;
-    --muted: #a0a8a5;
-    --text: #f0f6f3;
-    --accent-green: #19a974;
-    --accent-green-2: #0f8f58;
-    --accent-red: #ff4d4f;
-    --glass: rgba(255,255,255,0.02);
-    --glass-strong: rgba(255,255,255,0.04);
-    --radius: 14px;
-    --shadow-lg: 0 20px 44px rgba(0,0,0,0.65);
-    --shadow-sm: 0 8px 18px rgba(0,0,0,0.45);
-    --tap-size: 44px;
-    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, "Helvetica Neue", Arial;
-  }
-
-  /* Reset & base styles */
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
-
-  html, body {
-    height: 100%;
-    background: linear-gradient(180deg, var(--bg), #070707);
-    color: var(--text);
-    -webkit-font-smoothing: antialiased;
-    overflow-x: hidden;
-    line-height: 1.35;
-  }
-
-  img {
-    display: block;
-    max-width: 100%;
-    height: auto;
-  }
-
-  a {
-    color: inherit;
-    text-decoration: none;
-  }
-
-  button, input, select, textarea {
-    font-family: inherit;
-    font-size: inherit;
-  }
-
-  /* App container */
-  .app-container {
-    max-width: 100%;
-    margin: 0 auto;
-    padding: 12px 12px 140px;
-    min-height: 100vh;
-  }
-
-  /* Header */
-  .app-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 16px;
-    padding: 0 4px;
-  }
-
-  .logo {
-    width: 52px;
-    height: 52px;
-    border-radius: 12px;
-    background: linear-gradient(180deg, #1e1e1e, #141414);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: var(--shadow-sm);
-    flex: 0 0 52px;
-  }
-
-  .bolt {
-    font-size: 20px;
-    color: var(--accent-green);
-  }
-
-  .header-text {
-    flex: 1;
-  }
-
-  .app-title {
-    margin: 0;
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--text);
-  }
-
-  .app-subtitle {
-    margin: 0;
-    font-size: 13px;
-    color: var(--muted);
-  }
-
-  .top-actions {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-
-  .icon-btn {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid rgba(255,255,255,0.03);
-    box-shadow: var(--shadow-sm);
-    cursor: pointer;
-    min-width: var(--tap-size);
-    min-height: var(--tap-size);
-    transition: all 0.2s ease;
-  }
-
-  .icon-btn:active {
-    transform: scale(0.95);
-    background: rgba(255,255,255,0.04);
-  }
-
-  /* Search */
-  .search-container {
-    margin: 16px 0;
-    padding: 0 4px;
-  }
-
-  .search-box {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-
-  .search-input {
-    flex: 1;
-    padding: 12px 16px;
-    border-radius: 12px;
-    background: transparent;
-    border: 1px solid rgba(255,255,255,0.08);
-    color: var(--text);
-    font-size: 16px;
-    min-height: 44px;
-    transition: border-color 0.2s ease;
-  }
-
-  .search-input:focus {
-    outline: none;
-    border-color: var(--accent-green);
-  }
-
-  .delivery-tag {
-    padding: 8px 12px;
-    border-radius: 10px;
-    background: rgba(255,255,255,0.02);
-    font-weight: 700;
-    font-size: 13px;
-    white-space: nowrap;
-  }
-
-  /* Menu grid */
-  .menu-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    padding: 0 4px;
-  }
-
-  /* Product card */
-  .product-card {
-    background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));
-    border-radius: 14px;
-    overflow: hidden;
-    border: 1px solid rgba(255,255,255,0.03);
-    box-shadow: var(--shadow-sm);
-    display: flex;
-    flex-direction: column;
-    min-height: 260px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-
-  .product-card:active {
-    transform: scale(0.98);
-  }
-
-  .product-image {
-    width: 100%;
-    height: 140px;
-    background-position: center;
-    background-size: cover;
-    flex-shrink: 0;
-    object-fit: cover;
-  }
-
-  .product-body {
-    padding: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    flex: 1;
-  }
-
-  .product-title {
-    margin: 0;
-    font-size: 16px;
-    color: var(--text);
-    line-height: 1.15;
-    font-weight: 600;
-  }
-
-  .product-description {
-    font-size: 13px;
-    color: var(--muted);
-    line-height: 1.25;
-    max-height: 3.2em;
-    overflow: hidden;
-  }
-
-  .product-price {
-    font-weight: 900;
-    font-size: 15px;
-    color: var(--accent-green);
-  }
-
-  .product-controls {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: auto;
-  }
-
-  .quantity-controls {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(255,255,255,0.02);
-    padding: 6px;
-    border-radius: 12px;
-    border: 1px solid rgba(255,255,255,0.02);
-  }
-
-  .quantity-btn {
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    border: 0;
-    background: transparent;
-    font-size: 18px;
-    font-weight: 800;
-    color: inherit;
-    cursor: pointer;
-    min-width: 36px;
-    min-height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.2s ease;
-  }
-
-  .quantity-btn:active {
-    background: rgba(255,255,255,0.05);
-  }
-
-  .quantity-display {
-    min-width: 28px;
-    text-align: center;
-    font-weight: 800;
-  }
-
-  .add-btn {
-    padding: 10px 14px;
-    border-radius: 12px;
-    font-weight: 900;
-    border: 0;
-    background: linear-gradient(180deg, rgba(25,169,116,0.16), rgba(25,169,116,0.08));
-    color: var(--accent-green);
-    min-width: 88px;
-    text-align: center;
-    box-shadow: var(--shadow-sm);
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    min-height: 44px;
-    transition: all 0.2s ease;
-  }
-
-  .add-btn:active {
-    transform: scale(0.95);
-  }
-
-  .add-btn.active {
-    background: linear-gradient(180deg, var(--accent-green), var(--accent-green-2));
-    color: #fff;
-  }
-
-  /* Bottom bar */
-  .bottom-bar {
-    position: fixed;
-    left: 12px;
-    right: 12px;
-    bottom: calc(16px + env(safe-area-inset-bottom));
-    background: linear-gradient(180deg, var(--card), #0f0f0f);
-    border-radius: 16px;
-    padding: 12px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    box-shadow: var(--shadow-lg);
-    z-index: 1200;
-    border: 1px solid rgba(255,255,255,0.03);
-  }
-
-  .cart-summary {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    flex: 1;
-  }
-
-  .cart-count {
-    background: rgba(255,255,255,0.03);
-    padding: 8px 10px;
-    border-radius: 12px;
-    font-weight: 900;
-    min-width: 44px;
-    text-align: center;
-  }
-
-  .cart-total {
-    font-weight: 900;
-    font-size: 16px;
-  }
-
-  .checkout-btn {
-    padding: 12px 16px;
-    border-radius: 12px;
-    background: linear-gradient(180deg, var(--accent-green), var(--accent-green-2));
-    border: 0;
-    color: white;
-    font-weight: 900;
-    cursor: pointer;
-    min-height: 44px;
-    transition: all 0.2s ease;
-  }
-
-  .checkout-btn:active {
-    transform: scale(0.95);
-  }
-
-  /* Sheet */
-  .sheet {
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: -100%;
-    height: 82vh;
-    background: linear-gradient(180deg, var(--card), #0b0b0b);
-    border-top-left-radius: 18px;
-    border-top-right-radius: 18px;
-    box-shadow: 0 -22px 56px rgba(0,0,0,0.75);
-    z-index: 1400;
-    transition: bottom 0.34s cubic-bezier(.2,.9,.25,1);
-    display: flex;
-    flex-direction: column;
-    padding: 12px;
-    gap: 12px;
-    padding-bottom: calc(12px + env(safe-area-inset-bottom));
-  }
-
-  .sheet.open {
-    bottom: 0;
-  }
-
-  .sheet-handle {
-    width: 48px;
-    height: 6px;
-    background: rgba(255,255,255,0.06);
-    border-radius: 999px;
-    margin: 6px auto;
-    cursor: pointer;
-  }
-
-  .sheet-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-  }
-
-  .sheet-title {
-    font-weight: 900;
-    font-size: 16px;
-  }
-
-  .delivery-eta {
-    font-size: 13px;
-    color: var(--muted);
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-
-  .cart-items {
-    overflow: auto;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding-bottom: 6px;
-  }
-
-  .cart-item {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    padding: 10px;
-    border-radius: 12px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));
-    border: 1px solid rgba(255,255,255,0.03);
-  }
-
-  .cart-item-image {
-    width: 72px;
-    height: 56px;
-    object-fit: cover;
-    border-radius: 8px;
-    flex-shrink: 0;
-  }
-
-  .cart-item-info {
-    flex: 1;
-  }
-
-  .cart-item-name {
-    display: block;
-    font-size: 15px;
-    font-weight: 600;
-  }
-
-  .cart-item-details {
-    color: var(--muted);
-    font-size: 13px;
-    margin-top: 4px;
-  }
-
-  .cart-item-controls {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    align-items: flex-end;
-  }
-
-  .mini-quantity-controls {
-    display: flex;
-    gap: 6px;
-    align-items: center;
-  }
-
-  .small-btn {
-    padding: 8px 10px;
-    border-radius: 10px;
-    background: rgba(255,255,255,0.02);
-    border: 1px solid rgba(255,255,255,0.02);
-    font-weight: 700;
-    cursor: pointer;
-    min-height: 36px;
-    transition: all 0.2s ease;
-  }
-
-  .small-btn:active {
-    transform: scale(0.95);
-  }
-
-  /* Order summary */
-  .order-summary {
-    padding: 12px;
-    border-radius: 12px;
-    background: linear-gradient(90deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));
-    border: 1px solid rgba(255,255,255,0.03);
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .summary-line {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 14px;
-    color: var(--muted);
-  }
-
-  .summary-line strong {
-    color: inherit;
-  }
-
-  .summary-total {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 18px;
-    font-weight: 900;
-    margin-top: 4px;
-  }
-
-  .promo-section {
-    display: flex;
-    gap: 8px;
-    margin-top: 8px;
-  }
-
-  .promo-input {
-    flex: 1;
-    padding: 10px;
-    border-radius: 10px;
-    background: transparent;
-    border: 1px solid rgba(255,255,255,0.03);
-    color: inherit;
-    min-height: 44px;
-  }
-
-  .apply-promo-btn {
-    padding: 10px;
-    border-radius: 10px;
-    border: 0;
-    background: linear-gradient(180deg, rgba(25,169,116,0.12), rgba(25,169,116,0.06));
-    color: var(--accent-green);
-    font-weight: 800;
-    cursor: pointer;
-    min-height: 44px;
-    transition: all 0.2s ease;
-  }
-
-  .apply-promo-btn:active {
-    transform: scale(0.95);
-  }
-
-  .promo-message {
-    font-size: 13px;
-    color: var(--muted);
-    min-height: 18px;
-  }
-
-  /* Checkout form */
-  .checkout-form {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .form-input, .form-textarea, .form-select {
-    width: 100%;
-    padding: 12px;
-    border-radius: 12px;
-    background: transparent;
-    border: 1px solid rgba(255,255,255,0.08);
-    color: inherit;
-    min-height: 44px;
-    font-size: 16px;
-    transition: border-color 0.2s ease;
-  }
-
-  .form-input:focus, .form-textarea:focus, .form-select:focus {
-    outline: none;
-    border-color: var(--accent-green);
-  }
-
-  .form-actions {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-
-  .confirm-order-btn {
-    flex: 1;
-    padding: 14px;
-    border-radius: 12px;
-    border: 0;
-    background: linear-gradient(180deg, var(--accent-green), var(--accent-green-2));
-    color: white;
-    font-weight: 900;
-    font-size: 16px;
-    cursor: pointer;
-    box-shadow: var(--shadow-lg);
-    min-height: 48px;
-    transition: all 0.2s ease;
-  }
-
-  .confirm-order-btn:active {
-    transform: scale(0.95);
-  }
-
-  .secondary-btn {
-    padding: 12px;
-    border-radius: 12px;
-    border: 1px solid rgba(255,255,255,0.03);
-    background: transparent;
-    color: inherit;
-    font-weight: 800;
-    min-height: 48px;
-    transition: all 0.2s ease;
-  }
-
-  .secondary-btn:active {
-    transform: scale(0.95);
-  }
-
-  /* Success receipt */
-  .receipt {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    padding: 18px;
-    border-radius: 12px;
-    background: linear-gradient(180deg, #0f2b18, #08130b);
-    border: 1px solid rgba(25,169,116,0.12);
-  }
-
-  .receipt.show {
-    display: flex;
-  }
-
-  .checkmark {
-    width: 68px;
-    height: 68px;
-    border-radius: 999px;
-    background: linear-gradient(180deg, var(--accent-green), var(--accent-green-2));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 12px 32px rgba(15,143,88,0.22);
-  }
-
-  .checkmark svg {
-    width: 36px;
-    height: 36px;
-    color: white;
-  }
-
-  .receipt-message {
-    color: var(--muted);
-    font-size: 13px;
-    text-align: center;
-  }
-
-  /* Bubble notification */
-  .bubble {
-    position: fixed;
-    right: 20px;
-    bottom: 120px;
-    background: var(--accent-green);
-    color: #fff;
-    padding: 8px 12px;
-    border-radius: 16px;
-    font-weight: 900;
-    box-shadow: var(--shadow-lg);
-    opacity: 0;
-    transform: translateY(12px);
-    transition: all 0.36s;
-    z-index: 1500;
-    pointer-events: none;
-  }
-
-  .bubble.visible {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
-  }
-
-  /* Focus styles for accessibility */
-  :focus {
-    outline: 3px solid rgba(25,169,116,0.14);
-    outline-offset: 3px;
-    border-radius: 8px;
-  }
-
-  /* Responsive design */
-  @media (min-width: 920px) {
-    .app-container {
-      display: grid;
-      grid-template-columns: 1fr 360px;
-      gap: 18px;
-      padding: 18px 18px 140px;
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Hit⚡️Points — Mini App</title>
+  <meta name="description" content="Минималистичный мобильный mini-app для кофе и доставки — Hit⚡️Points" />
+  <style>
+    /* === Reset & base === */
+    :root{
+      --bg: #f6f7f8;
+      --card:#ffffff;
+      --muted:#6b7280;
+      --accent:#0ea5a4; /* teal-ish accent */
+      --accent-dark:#088a86;
+      --danger:#ef4444;
+      --glass: rgba(255,255,255,0.6);
+      --shadow: 0 6px 18px rgba(20,20,30,0.06), inset 0 1px 0 rgba(255,255,255,0.6);
+      --radius: 14px;
+      --btn-radius: 16px;
+      --max-width: 480px; /* app max width */
     }
-    
-    .menu-grid {
-      grid-column: 1/2;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
+    *{box-sizing: border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg,var(--bg), #fdfdfd 60%);
+      color:#0f172a;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      -webkit-tap-highlight-color: transparent;
+      padding: env(safe-area-inset-top) 12px env(safe-area-inset-bottom);
+      display:flex;justify-content:center;
     }
-    
-    .bottom-bar {
-      display: none;
+    .app{
+      width: 100%;
+      max-width: var(--max-width);
+      min-height:100vh;
+      display:flex;flex-direction:column;
+      gap:12px;
     }
-    
-    .sheet {
-      display: none;
-    }
-  }
 
-  /* Prevent text overflow */
-  .product-description, .app-subtitle, .app-title, .product-price, .cart-item-details {
-    word-break: break-word;
-    hyphens: auto;
-  }
+    /* header */
+    header{position:sticky;top:env(safe-area-inset-top);z-index:20;padding:14px 6px 0;}
+    .topbar{
+      display:flex;align-items:center;gap:12px;background:transparent;
+    }
+    .brand{
+      display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:12px;backdrop-filter: blur(6px);-webkit-backdrop-filter: blur(6px);
+      background: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.55));box-shadow: var(--shadow);
+    }
+    .logo{display:flex;align-items:center;gap:8px}
+    .logo .circle{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#fff,#f3f4f6);box-shadow:0 4px 10px rgba(10,10,20,0.06);}
+    .logo svg{width:22px;height:22px}
+    .brand h1{font-size:16px;margin:0;line-height:1;letter-spacing:-0.2px}
+    .brand p{margin:0;font-size:12px;color:var(--muted)}
 
-  /* Empty state */
-  .empty-cart {
-    text-align: center;
-    color: var(--muted);
-    padding: 20px;
-  }
-</style>
+    /* content */
+    main{flex:1;overflow:auto;padding-bottom:96px}
+    .hero{padding:14px;border-radius:16px;background:linear-gradient(180deg,#fff,#fbfcfd);box-shadow:var(--shadow);}
+    .hero h2{margin:0;font-size:18px}
+    .hero p{margin:6px 0 0;color:var(--muted);font-size:13px}
+
+    /* menu list */
+    .menu{display:grid;gap:12px;margin-top:6px}
+    .card{
+      background:var(--card);border-radius:14px;padding:12px;box-shadow: 0 4px 14px rgba(20,20,30,0.04);border: 1px solid rgba(15,20,40,0.03);
+      display:flex;align-items:flex-start;gap:12px;overflow:hidden
+    }
+    .item-media{width:72px;min-width:72px;height:72px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#fff,#f7fafb);box-shadow:0 6px 14px rgba(10,10,20,0.04)}
+    .item-body{flex:1}
+    .item-title{display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .item-title h3{margin:0;font-size:15px}
+    .price{font-weight:600}
+    .desc{margin-top:6px;color:var(--muted);font-size:13px;line-height:1.35}
+
+    /* controls */
+    .controls{display:flex;gap:8px;align-items:center;margin-top:10px}
+    .btn{
+      appearance:none;border:0;padding:10px 14px;border-radius:var(--btn-radius);font-weight:600;display:inline-flex;align-items:center;gap:8px;justify-content:center;
+      background:linear-gradient(180deg,var(--accent),var(--accent-dark));color:#fff;box-shadow: 0 8px 20px rgba(14,165,164,0.14);cursor:pointer;
+      transition: transform .12s ease, box-shadow .12s ease;min-height:44px
+    }
+    .btn:active{transform:translateY(1px)}
+    .btn.ghost{background:transparent;color:var(--accent);box-shadow:none;border:1px solid rgba(8,138,134,0.12)}
+
+    .qty{display:inline-flex;align-items:center;border-radius:10px;overflow:hidden;border:1px solid rgba(15,20,40,0.05)}
+    .qty button{background:transparent;border:0;padding:8px 10px;font-weight:700;cursor:pointer}
+    .qty span{display:inline-block;padding:8px 12px;background:linear-gradient(180deg,#fff,#fafafa);min-width:34px;text-align:center}
+
+    /* bottom cart bar */
+    .cart-bar{
+      position:fixed;left:50%;transform:translateX(-50%);bottom:env(safe-area-inset-bottom);width:100%;max-width:var(--max-width);padding:10px;pointer-events:none;
+    }
+    .cart-inner{pointer-events:auto;background:linear-gradient(180deg,#ffffff,#fbffff);border-radius:18px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 12px 30px rgba(10,10,20,0.08);border:1px solid rgba(15,20,40,0.04)}
+    .cart-info{display:flex;align-items:center;gap:10px}
+    .cart-info strong{font-size:15px}
+    .small-muted{font-size:13px;color:var(--muted)}
+
+    /* modal / sheet */
+    .sheet{position:fixed;left:0;right:0;bottom:0;top:28%;border-top-left-radius:18px;border-top-right-radius:18px;background:linear-gradient(180deg,#fff,#fbfdff);box-shadow:0 -20px 40px rgba(10,10,20,0.06);padding:14px;display:none;flex-direction:column;gap:12px;z-index:40}
+    .sheet.open{display:flex}
+    .sheet .line{height:6px;width:56px;border-radius:999px;background:#e6e9ef;margin:0 auto}
+    .sheet .list{overflow:auto;max-height:40vh}
+
+    /* form */
+    .field{display:flex;flex-direction:column;gap:6px}
+    input[type=text]{padding:12px;border-radius:12px;border:1px solid rgba(15,20,40,0.06);background:linear-gradient(180deg,#fff,#fbfdff);outline:none}
+    label{font-size:13px;color:var(--muted)}
+
+    /* responsive safety */
+    @media (max-width:420px){
+      :root{--btn-radius:14px;--radius:12px}
+      .item-media{width:62px;height:62px;min-width:62px}
+    }
+
+    /* tiny accessibility tweaks */
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;border:0;overflow:hidden;clip:rect(0 0 0 0)}
+  </style>
 </head>
 <body>
-  <div class="app-container">
-    <header class="app-header">
-      <div class="logo" aria-hidden="true">
-        <div class="bolt">⚡️</div>
-      </div>
-      <div class="header-text">
-        <h1 class="app-title">Hit⚡️Points</h1>
-        <div class="app-subtitle">Кофе и выпечка — быстрая доставка</div>
-      </div>
-
-      <div class="top-actions" role="toolbar" aria-label="Доступные действия">
-        <button id="admin-btn" class="icon-btn" title="Admin via Telegram" aria-label="Открыть чат админа">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M4 12l7-8 5 5 4-2-8 11-8-6z" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
+  <div class="app" id="app">
+    <header>
+      <div class="topbar">
+        <div class="brand">
+          <div class="logo">
+            <div class="circle" aria-hidden>
+              <!-- coffee + lightning svg -->
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="20" height="14" rx="3" fill="#fff" stroke="#000" stroke-opacity="0.06"/><path d="M8 10h6" stroke="#0ea5a4" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 3l-3 5h3l-1 5 5-6h-3l1-4" fill="#fde68a" stroke="#f59e0b" stroke-width="0.6"/></svg>
+            </div>
+          </div>
+          <div>
+            <h1>Hit⚡️Points</h1>
+            <p>Минимализм. Быстрая доставка.</p>
+          </div>
+        </div>
+        <div style="margin-left:auto">
+          <button class="btn ghost" id="openCartBtn" aria-label="Открыть корзину">Корзина</button>
+        </div>
       </div>
     </header>
 
-    <div class="search-container" role="search">
-      <div class="search-box">
-        <input id="search-input" class="search-input" placeholder="Поиск по меню (например: латте)" aria-label="Поиск по меню" />
-        <div class="delivery-tag" aria-hidden="true">Доставка</div>
-      </div>
-    </div>
-
     <main>
-      <section class="menu-grid" id="menu-grid" aria-live="polite"></section>
-    </main>
-  </div>
+      <section class="hero">
+        <h2>Доставка кофе и еды — быстро и аккуратно</h2>
+        <p>Акцент на качестве: удобный интерфейс, понятные кнопки и аккуратная типографика. Одна страница — всё, что нужно.</p>
+      </section>
 
-  <!-- Notification bubble -->
-  <div id="bubble" class="bubble" aria-live="polite" aria-hidden="true">Добавлено</div>
+      <section class="menu" id="menu">
+        <!-- menu items injected by JS for clarity -->
+      </section>
 
-  <!-- Bottom cart bar -->
-  <div class="bottom-bar" id="bottom-bar" role="region" aria-label="Корзина">
-    <div class="cart-summary">
-      <div>
-        <div style="font-size:12px;color:var(--muted)">В корзине</div>
-        <div class="cart-count" id="cart-count" aria-live="polite">0</div>
-      </div>
-      <div style="flex:1">
-        <div style="font-size:12px;color:var(--muted)">Итого</div>
-        <div class="cart-total" id="cart-total">0 ₽</div>
-      </div>
-    </div>
-    <button class="checkout-btn" id="open-sheet-btn" aria-controls="sheet">Оформить заказ</button>
-  </div>
-
-  <!-- Cart sheet -->
-  <div class="sheet" id="sheet" aria-hidden="true" role="dialog" aria-label="Оформление заказа">
-    <div class="sheet-handle" id="sheet-handle" role="button" aria-label="Закрыть/Открыть"></div>
-
-    <div class="sheet-header">
-      <div>
-        <div class="sheet-title">Оформление заказа</div>
-        <div class="delivery-eta" id="delivery-eta">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="opacity:.9">
-            <path d="M12 7v5l3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          <span id="eta-text"> ~30–45 мин</span>
-        </div>
-      </div>
-      <div style="text-align:right">
-        <div style="color:var(--muted);font-size:13px">Итого</div>
-        <div style="font-weight:900;font-size:18px" id="sheet-total">0 ₽</div>
-      </div>
-    </div>
-
-    <div class="cart-items" id="cart-items">
-      <div class="empty-cart">Корзина пуста — добавьте что-нибудь вкусное.</div>
-    </div>
-
-    <div class="order-summary" id="order-summary">
-      <div class="summary-line">
-        <div class="muted">Подытог</div>
-        <div id="subtotal">0 ₽</div>
-      </div>
-      <div class="summary-line">
-        <div class="muted">Доставка</div>
-        <div id="delivery-fee">—</div>
-      </div>
-      <div class="summary-line">
-        <div class="muted">Скидка</div>
-        <div id="discount">0 ₽</div>
-      </div>
-      <div style="height:1px;background:rgba(255,255,255,0.03);margin:6px 0;border-radius:2px"></div>
-      <div class="summary-total">
-        <div>Итого к оплате</div>
-        <div id="final-total">0 ₽</div>
-      </div>
-
-      <div class="promo-section" style="align-items:center">
-        <input id="promo-input" class="promo-input" placeholder="Промокод (HIT10 — 10%)" aria-label="Промокод" />
-        <button id="apply-promo-btn" class="apply-promo-btn">Применить</button>
-      </div>
-      <div class="promo-message" id="promo-message" role="status" aria-live="polite"></div>
-    </div>
-
-    <div class="checkout-form">
-      <input id="customer-name" class="form-input" placeholder="Имя получателя" aria-label="Имя получателя" />
-      <input id="customer-phone" class="form-input" placeholder="Телефон (+7XXXXXXXXXX)" aria-label="Телефон" />
-      <textarea id="delivery-address" class="form-textarea" placeholder="Адрес доставки (улица, дом, подъезд, этаж)" rows="2" aria-label="Адрес доставки"></textarea>
-      <select id="payment-method" class="form-select" aria-label="Способ оплаты">
-        <option value="cash">Наличными</option>
-        <option value="card">Картой при доставке</option>
-      </select>
-
-      <div class="form-actions">
-        <button id="confirm-order-btn" class="confirm-order-btn">Подтвердить и отправить</button>
-        <button id="clear-cart-btn" class="secondary-btn">Очистить</button>
-      </div>
-
-      <div class="receipt" id="receipt" role="status" aria-live="polite">
-        <div class="checkmark" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none">
-            <path d="M20 6L9 17l-5-5" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        <div style="font-weight:900">Заказ отправлен</div>
-        <div class="receipt-message">Спасибо! Админ получит уведомление в Telegram. Статус заказа можно уточнить в чате.</div>
-      </div>
-    </div>
-  </div>
-
-<script>
-// Configuration
-const BOT_USERNAME = 'HitPointsAdminBot';
-
-// Menu data
-const products = [
-  { id: 'espresso', title: 'Эспрессо', price: 120, subtitle: 'Крепкий один шот, чистый аромат', img: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=400&auto=format&fit=crop&ixlib=rb-4.0.3' },
-  { id: 'americano', title: 'Американо', price: 140, subtitle: 'Горячая вода и насыщенный эспрессо', img: 'https://images.unsplash.com/photo-1572442388796-11668a67e53d?q=80&w=400&auto=format&fit=crop&ixlib=rb-4.0.3' },
-  { id: 'latte', title: 'Латте', price: 240, subtitle: 'Мягкое молоко и бархатная пенка', img: 'https://images.unsplash.com/photo-1541167760496-1628856ab772?q=80&w=400&auto=format&fit=crop&ixlib=rb-4.0.3' },
-  { id: 'cappuccino', title: 'Капучино', price: 240, subtitle: 'Идеальный баланс кофе и молока', img: 'https://images.unsplash.com/photo-1511920170033-f8396924c348?q=80&w=400&auto=format&fit=crop&ixlib=rb-4.0.3' },
-  { id: 'flatwhite', title: 'Флет уайт', price: 260, subtitle: 'Интенсивный вкус с баристой пенкой', img: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?q=80&w=400&auto=format&fit=crop&ixlib=rb-4.0.3' },
-  { id: 'coldbrew', title: 'Cold Brew', price: 280, subtitle: 'Холодный настой — мягкий и терпкий', img: 'https://images.unsplash.com/photo-1498804103079-a6351b050096?q=80&w=400&auto=format&fit=crop&ixlib=rb-4.0.3' },
-  { id: 'croissant', title: 'Круассан', price: 120, subtitle: 'Слойное тесто — тёплый и хрустящий', img: 'https://images.unsplash.com/photo-1506086679526-8c3b4570f74f?q=80&w=400&auto=format&fit=crop&ixlib=rb-4.0.3' },
-  { id: 'muffin', title: 'Маффин', price: 110, subtitle: 'Вкусный десерт к кофе', img: 'https://images.unsplash.com/photo-1542801374-7d69f6b7b3c9?q=80&w=400&auto=format&fit=crop&ixlib=rb-4.0.3' }
-];
-
-// Cart and promo state
-const cart = {};
-let promo = { code: null, percent: 0 };
-
-// DOM helpers
-function $(selector, context = document) {
-  return context.querySelector(selector);
-}
-
-function $all(selector, context = document) {
-  return Array.from(context.querySelectorAll(selector));
-}
-
-function formatPrice(amount) {
-  return amount.toLocaleString('ru-RU') + ' ₽';
-}
-
-function clamp(value, min, max) {
-  return Math.max(min, Math.min(max, value));
-}
-
-// Render product grid
-function renderMenu(productList = products) {
-  const container = $('#menu-grid');
-  container.innerHTML = '';
-  
-  productList.forEach(product => {
-    const card = document.createElement('article');
-    card.className = 'product-card';
-    card.innerHTML = `
-      <div class="product-image" style="background-image:url('${product.img}')" role="img" aria-label="${product.title}"></div>
-      <div class="product-body">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+      <section style="margin-top:6px">
+        <div class="card">
           <div style="flex:1">
-            <h3 class="product-title">${product.title}</h3>
-            <div class="product-description">${product.subtitle}</div>
-          </div>
-          <div style="text-align:right;flex:0 0 88px">
-            <div class="product-price">${formatPrice(product.price)}</div>
-            <div style="font-size:12px;color:var(--muted);margin-top:6px">от ${product.price} р</div>
+            <h3 style="margin:0">Опции доставки</h3>
+            <p class="small-muted" style="margin:6px 0 0">Мы доставляем в радиусе 8 км. Время — ~30–45 минут.</p>
+            <div style="margin-top:10px;display:flex;gap:8px;align-items:center">
+              <label style="display:inline-flex;align-items:center;gap:8px">
+                <input type="checkbox" id="deliveryToggle" checked />
+                <span class="small-muted">Доставка</span>
+              </label>
+              <div style="flex:1"></div>
+              <button class="btn ghost" id="contactBtn">Контакты</button>
+            </div>
+            <div id="addressWrap" style="margin-top:10px">
+              <div class="field"><label for="address">Адрес для доставки</label><input id="address" type="text" placeholder="ул. Примерная, д. 1, кв. 12"/></div>
+            </div>
           </div>
         </div>
+      </section>
 
-        <div class="product-controls">
-          <div class="quantity-controls" role="group" aria-label="Количество">
-            <button class="quantity-btn minus" data-id="${product.id}" aria-label="уменьшить">−</button>
-            <div id="quantity-${product.id}" class="quantity-display" role="spinbutton" aria-valuemin="1" aria-valuemax="99" aria-valuenow="1">1</div>
-            <button class="quantity-btn plus" data-id="${product.id}" aria-label="увеличить">+</button>
+    </main>
+
+    <!-- bottom cart bar -->
+    <div class="cart-bar">
+      <div class="cart-inner" role="region" aria-label="Корзина">
+        <div class="cart-info">
+          <div style="width:48px;height:48px;border-radius:12px;background:linear-gradient(180deg,#fff,#f3f4f6);display:flex;align-items:center;justify-content:center">☕️</div>
+          <div>
+            <div style="display:flex;gap:8px;align-items:center"><strong id="cartCount">0 товаров</strong><span class="small-muted" id="cartSum">—</span></div>
+            <div class="small-muted" id="eta">Самовывоз • 0–0 мин</div>
           </div>
-          <button class="add-btn" data-add="${product.id}" aria-label="Добавить в корзину: ${product.title}">Добавить</button>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="btn ghost" id="viewBtn">Просмотр</button>
+          <button class="btn" id="orderBtn" disabled>Оформить</button>
         </div>
       </div>
-    `;
-    container.appendChild(card);
-  });
-}
+    </div>
 
-// Update cart UI
-function updateCartUI() {
-  const productIds = Object.keys(cart);
-  const itemCount = productIds.reduce((sum, id) => sum + cart[id].qty, 0);
-  const subtotal = productIds.reduce((sum, id) => sum + cart[id].qty * cart[id].price, 0);
-  const deliveryFee = calculateDeliveryFee(subtotal);
-  const discount = Math.round(subtotal * (promo.percent / 100));
-  const finalTotal = Math.max(0, subtotal + deliveryFee - discount);
-
-  // Update cart display
-  $('#cart-count').textContent = itemCount;
-  $('#cart-total').textContent = formatPrice(finalTotal);
-  $('#sheet-total').textContent = formatPrice(finalTotal);
-  $('#subtotal').textContent = formatPrice(subtotal);
-  $('#delivery-fee').textContent = deliveryFee === 0 ? 'Бесплатно' : formatPrice(deliveryFee);
-  $('#discount').textContent = discount > 0 ? `− ${formatPrice(discount)}` : '0 ₽';
-  $('#final-total').textContent = formatPrice(finalTotal);
-
-  // Update cart items list
-  const cartItemsContainer = $('#cart-items');
-  cartItemsContainer.innerHTML = '';
-  
-  if (productIds.length === 0) {
-    cartItemsContainer.innerHTML = '<div class="empty-cart">Корзина пуста — добавьте что-нибудь вкусное.</div>';
-  } else {
-    productIds.forEach(id => {
-      const item = cart[id];
-      const itemElement = document.createElement('div');
-      itemElement.className = 'cart-item';
-      itemElement.innerHTML = `
-        <img src="${item.img}" alt="${item.title}" class="cart-item-image">
-        <div class="cart-item-info">
-          <strong class="cart-item-name">${item.title}</strong>
-          <div class="cart-item-details">${formatPrice(item.price)} × ${item.qty} = <strong>${formatPrice(item.price * item.qty)}</strong></div>
+    <!-- sheet / cart modal -->
+    <div class="sheet" id="sheet" aria-hidden="true">
+      <div class="line" aria-hidden></div>
+      <h3 style="margin:6px 0 0">Ваша корзина</h3>
+      <div class="list" id="cartList" style="margin-top:8px"></div>
+      <div style="display:flex;gap:8px;align-items:center;justify-content:space-between;margin-top:8px">
+        <div>
+          <div class="small-muted">Итого</div>
+          <strong id="totalPrice">0 ₽</strong>
         </div>
-        <div class="cart-item-controls">
-          <div class="mini-quantity-controls" aria-hidden="false">
-            <button class="small-btn decrease" data-id="${id}" aria-label="уменьшить ${item.title}">−</button>
-            <div style="min-width:20px;text-align:center;font-weight:900">${item.qty}</div>
-            <button class="small-btn increase" data-id="${id}" aria-label="увеличить ${item.title}">+</button>
+        <div style="display:flex;gap:8px">
+          <button class="btn ghost" id="clearBtn">Очистить</button>
+          <button class="btn" id="checkoutBtn" disabled>Оформить заказ</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // ===== Data =====
+    const MENU = [
+      { id: 'shawarma', title: 'Сочная шаурма', price: 300, desc: 'Нежное мясо, свежие овощи, соус, который взорвёт ваши вкусовые рецепторы!' },
+      { id: 'burger', title: 'Эпические бургеры', price: 300, desc: 'Сочные котлеты, хрустящий салат, всё в идеальной булочке!' },
+      { id: 'fries', title: 'Хрустящая картошка фри', price: 150, desc: 'Золотистая, идеально прожаренная, с хрустом на каждом кусочке!' },
+      { id: 'hotdog', title: 'Классические хот-доги', price: 150, desc: 'Пикантные, сытные, для быстрого заряда!' },
+      { id: 'drinks', title: 'Освежающие напитки', price: 20, desc: 'От газировки до лимонадов, чтобы запить этот фестиваль вкусов!' }
+    ];
+
+    // ===== state =====
+    const state = { cart: {}, delivery: true };
+
+    // ===== ui helpers =====
+    const $ = sel => document.querySelector(sel);
+    const $$ = sel => document.querySelectorAll(sel);
+
+    function formatRub(n){ return n.toLocaleString('ru-RU') + ' ₽' }
+
+    // ===== render menu =====
+    const menuRoot = $('#menu');
+    function renderMenu(){
+      menuRoot.innerHTML = '';
+      MENU.forEach(item=>{
+        const el = document.createElement('div'); el.className='card';
+        el.innerHTML = `
+          <div class="item-media" aria-hidden>
+            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="20" height="14" rx="3" fill="#fff" stroke="#000" stroke-opacity="0.04"/><path d="M7 9h10" stroke="#94a3b8" stroke-width="1.4" stroke-linecap="round"/><path d="M9 14c1.2-1.5 4-2 6-1" stroke="#eab308" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </div>
-          <button class="small-btn remove" data-id="${id}" style="margin-top:6px" aria-label="удалить ${item.title}">Удалить</button>
-        </div>
-      `;
-      cartItemsContainer.appendChild(itemElement);
+          <div class="item-body">
+            <div class="item-title">
+              <h3>${item.title} <span style="font-size:12px;color:var(--muted);font-weight:500">от ${item.price} р</span></h3>
+              <div class="price">${formatRub(item.price)}</div>
+            </div>
+            <div class="desc">${item.desc}</div>
+            <div class="controls">
+              <div class="qty" data-id="${item.id}">
+                <button data-action="minus" aria-label="Уменьшить">−</button>
+                <span data-count>0</span>
+                <button data-action="plus" aria-label="Добавить">+</button>
+              </div>
+              <button class="btn" data-add="${item.id}">Добавить</button>
+            </div>
+          </div>
+        `;
+        menuRoot.appendChild(el);
+      });
+      attachMenuHandlers();
+    }
+
+    function attachMenuHandlers(){
+      $$('#menu .qty').forEach(q => {
+        const id = q.getAttribute('data-id');
+        q.querySelector('[data-action="plus"]').addEventListener('click', ()=>{
+          changeQty(id, 1);
+        });
+        q.querySelector('[data-action="minus"]').addEventListener('click', ()=>{
+          changeQty(id, -1);
+        });
+      });
+      $$('#menu [data-add]').forEach(b=>{
+        b.addEventListener('click', e=>{
+          const id = e.currentTarget.getAttribute('data-add');
+          addToCart(id, 1);
+        })
+      });
+    }
+
+    // ===== cart logic =====
+    function changeQty(id, delta){
+      const el = document.querySelector(`.qty[data-id="${id}"] span`);
+      let cur = parseInt(el.textContent,10) || 0;
+      cur = Math.max(0, cur + delta);
+      el.textContent = cur;
+      // not added to cart until "Добавить" pressed — this prevents accidental cart pollution
+    }
+
+    function addToCart(id, qty=1){
+      const item = MENU.find(m=>m.id===id);
+      if(!item) return;
+      state.cart[id] = (state.cart[id] || 0) + qty;
+      // reset visible quick qty
+      const quick = document.querySelector(`.qty[data-id="${id}"] span`);
+      if(quick) quick.textContent = 0;
+      refreshCartUI();
+      flashButton(`#menu [data-add="${id}"]`);
+    }
+
+    function flashButton(selector){
+      const b = document.querySelector(selector);
+      if(!b) return;
+      b.animate([{transform:'scale(1)'},{transform:'scale(.98)'},{transform:'scale(1)'}],{duration:220})
+    }
+
+    function refreshCartUI(){
+      const count = Object.values(state.cart).reduce((s,n)=>s+n,0);
+      const sum = Object.entries(state.cart).reduce((s,[id,q])=>{
+        const it = MENU.find(m=>m.id===id); return s + (it.price * q);
+      },0);
+      $('#cartCount').textContent = `${count} ${count===1? 'товар' : 'товаров'}`;
+      $('#cartSum').textContent = count>0 ? formatRub(sum) : '—';
+      $('#totalPrice').textContent = formatRub(sum);
+      $('#orderBtn').disabled = count===0;
+      $('#checkoutBtn').disabled = count===0;
+      // ETA simple
+      $('#eta').textContent = state.delivery ? 'Доставка • 30–45 мин' : 'Самовывоз • 10–20 мин';
+
+      // render list
+      const list = $('#cartList'); list.innerHTML = '';
+      Object.entries(state.cart).forEach(([id,q])=>{
+        const it = MENU.find(m=>m.id===id);
+        const row = document.createElement('div'); row.style.display='flex';row.style.justifyContent='space-between';row.style.alignItems='center';row.style.padding='8px 0';
+        row.innerHTML = `<div style="flex:1"><div style="display:flex;gap:10px;align-items:center"><div style="width:44px;height:44px;border-radius:10px;background:#fbfbfb;display:flex;align-items:center;justify-content:center">${it.title.split(' ')[0]}</div><div><div style="font-weight:600">${it.title}</div><div class="small-muted" style="font-size:13px">${formatRub(it.price)}</div></div></div></div><div style="display:flex;align-items:center;gap:8px"><button class="btn ghost" data-act="dec" data-id="${id}">−</button><div style="min-width:30px;text-align:center">${q}</div><button class="btn ghost" data-act="inc" data-id="${id}">+</button></div>`;
+        list.appendChild(row);
+      });
+
+      // attach inc/dec in sheet
+      $$('#cartList [data-act]').forEach(b=>{
+        b.addEventListener('click', e=>{
+          const id = e.currentTarget.getAttribute('data-id');
+          if(e.currentTarget.getAttribute('data-act')==='inc'){
+            addToCart(id,1);
+          }else{
+            decFromCart(id,1);
+          }
+        })
+      });
+    }
+
+    function decFromCart(id, qty=1){
+      if(!state.cart[id]) return;
+      state.cart[id] = Math.max(0, state.cart[id]-qty);
+      if(state.cart[id]===0) delete state.cart[id];
+      refreshCartUI();
+    }
+
+    // ===== sheet controls =====
+    const sheet = $('#sheet');
+    $('#openCartBtn').addEventListener('click', ()=> toggleSheet(true));
+    $('#viewBtn').addEventListener('click', ()=> toggleSheet(true));
+    $('#checkoutBtn').addEventListener('click', ()=> doCheckout());
+    $('#orderBtn').addEventListener('click', ()=> doCheckout());
+    $('#clearBtn').addEventListener('click', ()=>{ state.cart={}; refreshCartUI(); toggleSheet(false); });
+    $('#contactBtn').addEventListener('click', ()=>{ alert('Телефон: +7 900 000-00-00\nВремя работы: 09:00–22:00'); });
+
+    function toggleSheet(open){
+      sheet.classList.toggle('open', !!open);
+      sheet.setAttribute('aria-hidden', !open);
+    }
+
+    function doCheckout(){
+      const count = Object.values(state.cart).reduce((s,n)=>s+n,0);
+      if(count===0) return alert('Ваша корзина пуста.');
+      const sum = Object.entries(state.cart).reduce((s,[id,q])=>{
+        const it = MENU.find(m=>m.id===id); return s + (it.price * q);
+      },0);
+      const address = document.getElementById('address').value.trim();
+      const method = state.delivery ? 'Доставка' : 'Самовывоз';
+      let summary = `Заказ — ${formatRub(sum)}\n${method}\nТоваров: ${count}`;
+      if(state.delivery) summary += `\nАдрес: ${address || '[не указан]'}`;
+      // For demo we just show alert — in real app here you'd call API
+      alert(summary + '\n\n(Это демо — интегрируйте вызов на сервер в doCheckout)');
+      // reset after order for demo
+      state.cart = {};
+      refreshCartUI();
+      toggleSheet(false);
+    }
+
+    // delivery toggle
+    $('#deliveryToggle').addEventListener('change', e=>{
+      state.delivery = !!e.target.checked;
+      document.getElementById('addressWrap').style.display = state.delivery ? 'block' : 'none';
+      refreshCartUI();
     });
-  }
-}
 
-// Calculate delivery fee
-function calculateDeliveryFee(subtotal) {
-  if (subtotal === 0) return 0;
-  if (subtotal >= 700) return 0;
-  if (subtotal >= 400) return 50;
-  return 120;
-}
+    // open sheet by dragging from top? small UX: close on outside click
+    document.addEventListener('click', e=>{
+      if(!sheet.classList.contains('open')) return;
+      const inside = e.target.closest('.sheet');
+      const openBtn = e.target.closest('#openCartBtn') || e.target.closest('#viewBtn');
+      if(!inside && !openBtn){ toggleSheet(false); }
+    });
 
-// Add product to cart
-function addToCart(productId) {
-  const quantityElement = $(`#quantity-${productId}`);
-  const quantity = quantityElement ? clamp(parseInt(quantityElement.textContent || '1', 10), 1, 99) : 1;
-  const product = products.find(p => p.id === productId);
-  
-  if (!product) return;
-  
-  if (cart[productId]) {
-    cart[productId].qty = clamp(cart[productId].qty + quantity, 1, 99);
-  } else {
-    cart[productId] = { ...product, qty: quantity };
-  }
-  
-  showBubble('Добавлено');
-  updateCartUI();
-}
+    // init
+    renderMenu(); refreshCartUI();
 
-// Show bubble notification
-let bubbleTimeout = null;
-function showBubble(text) {
-  const bubble = $('#bubble');
-  bubble.textContent = text;
-  bubble.classList.add('visible');
-  bubble.setAttribute('aria-hidden', 'false');
-  
-  clearTimeout(bubbleTimeout);
-  bubbleTimeout = setTimeout(() => {
-    bubble.classList.remove('visible');
-    bubble.setAttribute('aria-hidden', 'true');
-  }, 900);
-}
+    // accessibility: keyboard
+    document.addEventListener('keydown', e=>{ if(e.key==='Escape') toggleSheet(false); });
 
-// Apply promo code
-function applyPromoCode() {
-  const code = $('#promo-input').value.trim().toUpperCase();
-  if (!code) {
-    $('#promo-message').textContent = 'Введите промокод.';
-    return;
-  }
-  
-  if (code === 'HIT10') {
-    promo = { code: 'HIT10', percent: 10 };
-    $('#promo-message').textContent = 'Промокод применён — 10% скидка';
-    $('#promo-message').style.color = 'var(--accent-green)';
-  } else {
-    promo = { code: null, percent: 0 };
-    $('#promo-message').textContent = 'Промокод не найден';
-    $('#promo-message').style.color = 'var(--muted)';
-  }
-  
-  updateCartUI();
-}
+    // avoid content overflow: ensure body fits
+    window.addEventListener('resize', ()=>{ document.body.style.minHeight = window.innerHeight + 'px'; });
 
-// Send order via Telegram
-function sendOrder() {
-  if (Object.keys(cart).length === 0) {
-    alert('Корзина пуста — добавьте товары.');
-    return;
-  }
-  
-  const name = $('#customer-name').value.trim();
-  const phone = $('#customer-phone').value.trim();
-  const address = $('#delivery-address').value.trim();
-  const paymentMethod = $('#payment-method').value;
-  
-  if (!name || !phone || !address) {
-    alert('Заполните имя, телефон и адрес доставки.');
-    return;
-  }
-  
-  const productIds = Object.keys(cart);
-  const subtotal = productIds.reduce((sum, id) => sum + cart[id].qty * cart[id].price, 0);
-  const deliveryFee = calculateDeliveryFee(subtotal);
-  const discount = Math.round(subtotal * (promo.percent / 100));
-  const total = Math.max(0, subtotal + deliveryFee - discount);
-
-  let orderText = `📍 *Hit⚡️Points — Новый заказ*\n\n*Имя:* ${escapeMarkdown(name)}\n*Телефон:* ${escapeMarkdown(phone)}\n*Адрес:* ${escapeMarkdown(address)}\n*Оплата:* ${escapeMarkdown(paymentMethod)}\n\n*Состав:*\n`;
-  
-  productIds.forEach(id => {
-    const item = cart[id];
-    orderText += `• ${escapeMarkdown(item.title)} — ${item.qty} × ${item.price} = ${item.qty * item.price} ₽\n`;
-  });
-  
-  orderText += `\nПодытог: ${subtotal} ₽\nДоставка: ${deliveryFee === 0 ? 'Бесплатно' : deliveryFee + ' ₽'}\nСкидка: −${discount} ₽\n*Итого: ${total} ₽*\n\nПожалуйста, подтвердите заказ.`;
-
-  showReceipt();
-  
-  const shareUrl = 'https://t.me/share/url?url=&text=' + encodeURIComponent(orderText);
-  try {
-    window.open(shareUrl, '_blank');
-  } catch (error) {
-    console.warn('Не удалось открыть окно шаринга:', error);
-  }
-}
-
-// Show receipt confirmation
-function showReceipt() {
-  const receipt = $('#receipt');
-  receipt.classList.add('show');
-  setTimeout(() => {
-    receipt.classList.remove('show');
-  }, 3500);
-}
-
-// Escape markdown for Telegram
-function escapeMarkdown(text) {
-  return text.replace(/([_*\\[\]()~`>#+\-=|{}.!])/g, '\\$1');
-}
-
-// Handle body scroll lock when sheet is open
-let scrollPosition = 0;
-function lockBodyScroll() {
-  scrollPosition = window.scrollY || document.documentElement.scrollTop;
-  document.body.style.position = 'fixed';
-  document.body.style.top = `-${scrollPosition}px`;
-  document.body.style.left = '0';
-  document.body.style.right = '0';
-}
-
-function unlockBodyScroll() {
-  document.body.style.position = '';
-  document.body.style.top = '';
-  window.scrollTo(0, scrollPosition);
-}
-
-// Event handlers
-document.addEventListener('click', (event) => {
-  // Quantity controls on product cards
-  const plusButton = event.target.closest('.plus');
-  if (plusButton) {
-    const productId = plusButton.dataset.id;
-    const quantityElement = $(`#quantity-${productId}`);
-    const currentValue = clamp(parseInt(quantityElement.textContent || '1', 10) + 1, 1, 99);
-    quantityElement.textContent = currentValue;
-    quantityElement.setAttribute('aria-valuenow', currentValue);
-    return;
-  }
-  
-  const minusButton = event.target.closest('.minus');
-  if (minusButton) {
-    const productId = minusButton.dataset.id;
-    const quantityElement = $(`#quantity-${productId}`);
-    const currentValue = clamp(parseInt(quantityElement.textContent || '1', 10) - 1, 1, 99);
-    quantityElement.textContent = currentValue;
-    quantityElement.setAttribute('aria-valuenow', currentValue);
-    return;
-  }
-  
-  // Add to cart
-  const addButton = event.target.closest('[data-add]');
-  if (addButton) {
-    addToCart(addButton.dataset.add);
-    openSheet();
-    return;
-  }
-  
-  // Cart item controls
-  const increaseButton = event.target.closest('.increase');
-  if (increaseButton) {
-    const productId = increaseButton.dataset.id;
-    if (cart[productId]) {
-      cart[productId].qty = clamp(cart[productId].qty + 1, 1, 99);
-    }
-    updateCartUI();
-    return;
-  }
-  
-  const decreaseButton = event.target.closest('.decrease');
-  if (decreaseButton) {
-    const productId = decreaseButton.dataset.id;
-    if (cart[productId]) {
-      cart[productId].qty = clamp(cart[productId].qty - 1, 1, 99);
-    }
-    updateCartUI();
-    return;
-  }
-  
-  const removeButton = event.target.closest('.remove');
-  if (removeButton) {
-    const productId = removeButton.dataset.id;
-    delete cart[productId];
-    updateCartUI();
-    return;
-  }
-  
-  // Sheet controls
-  if (event.target.closest('#open-sheet-btn')) {
-    openSheet();
-    return;
-  }
-  
-  if (event.target.closest('#sheet-handle') || event.target.closest('#close-sheet')) {
-    closeSheet();
-    return;
-  }
-  
-  // Promo code
-  if (event.target.closest('#apply-promo-btn')) {
-    applyPromoCode();
-    return;
-  }
-  
-  // Order actions
-  if (event.target.closest('#confirm-order-btn')) {
-    sendOrder();
-    return;
-  }
-  
-  if (event.target.closest('#clear-cart-btn')) {
-    // Clear cart
-    for (const key in cart) {
-      delete cart[key];
-    }
-    promo = { code: null, percent: 0 };
-    $('#promo-input').value = '';
-    $('#promo-message').textContent = '';
-    updateCartUI();
-    return;
-  }
-  
-  // Admin button
-  if (event.target.closest('#admin-btn')) {
-    if (!BOT_USERNAME || BOT_USERNAME.includes(' ')) {
-      alert('Укажите BOT_USERNAME в коде.');
-      return;
-    }
-    
-    const deepLink = `tg://resolve?domain=${BOT_USERNAME}`;
-    const webLink = `https://t.me/${BOT_USERNAME}`;
-    const newWindow = window.open(deepLink, '_blank');
-    
-    if (!newWindow) {
-      setTimeout(() => window.open(webLink, '_blank'), 300);
-    }
-    return;
-  }
-});
-
-// Search functionality
-$('#search-input').addEventListener('input', (event) => {
-  const query = event.target.value.trim().toLowerCase();
-  if (!query) {
-    renderMenu(products);
-    return;
-  }
-  
-  const filteredProducts = products.filter(product => 
-    (product.title + ' ' + product.subtitle).toLowerCase().includes(query)
-  );
-  
-  renderMenu(filteredProducts);
-});
-
-// Sheet open/close
-const sheet = $('#sheet');
-function openSheet() {
-  sheet.classList.add('open');
-  sheet.setAttribute('aria-hidden', 'false');
-  lockBodyScroll();
-}
-
-function closeSheet() {
-  sheet.classList.remove('open');
-  sheet.setAttribute('aria-hidden', 'true');
-  unlockBodyScroll();
-}
-
-// Initialize app
-function initApp() {
-  renderMenu();
-  updateCartUI();
-}
-
-// Handle responsive behavior
-function handleResize() {
-  if (window.innerWidth >= 920) {
-    $('#bottom-bar').style.display = 'none';
-  } else {
-    $('#bottom-bar').style.display = 'flex';
-  }
-}
-
-// Event listeners
-window.addEventListener('resize', handleResize);
-window.addEventListener('load', () => {
-  initApp();
-  handleResize();
-});
-
-// Accessibility: close sheet with Escape key
-document.addEventListener('keydown', (event) => {
-  if (event.key === 'Escape') {
-    closeSheet();
-  }
-});
-</script>
+  </script>
 </body>
 </html>
