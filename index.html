@@ -133,7 +133,6 @@
             font-weight: 600;
             font-size: 16px;
             line-height: 1.2;
-            /* allow title to wrap but not push button out of place */
             max-height: 3.6em; /* примерно 3 строки */
             overflow: hidden;
         }
@@ -194,6 +193,24 @@
         .minus, .plus { background:#444; color:#fff; border:none; width:40px; height:40px; border-radius:8px; font-size:22px; cursor:pointer; margin:0 10px; }
         .qty { font-size:20px; min-width:28px; text-align:center; color:#fff; }
 
+        /* Modal address styles */
+        .address-modal { display: none; position: fixed; inset: 0; z-index: 1100; }
+        .address-modal.active { display: block; }
+        .modal-overlay { position:absolute; inset:0; background: rgba(0,0,0,0.6); backdrop-filter: blur(3px); }
+        .modal-content { position:relative; background:#1b1b1b; color:#fff; width:90%; max-width:420px; margin:10vh auto; border-radius:20px; padding:18px; box-shadow:0 6px 20px rgba(0,0,0,0.5); }
+        .modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+        .modal-title { font-size:18px; font-weight:700; }
+        .modal-close { background:transparent; color:#aaa; font-size:24px; border:none; cursor:pointer; }
+        .modal-body { display:flex; flex-direction:column; gap:12px; }
+        #address-list { display:flex; flex-direction:column; gap:8px; max-height:36vh; overflow:auto; padding-right:6px; }
+        .address-item { display:flex; align-items:center; justify-content:space-between; background:#222; padding:10px 14px; border-radius:12px; cursor:pointer; transition:0.12s; }
+        .address-item:hover { background:#2a2a2a; }
+        .address-item.selected { border:1px solid var(--accent); }
+        .modal-divider { height:1px; background: rgba(255,255,255,0.06); margin:8px 0; }
+        .modal-add { display:flex; gap:10px; }
+        .modal-add input { flex:1; border-radius:10px; border:1px solid rgba(255,255,255,0.08); background:#111; color:#fff; padding:10px; font-size:14px; }
+        .modal-add button { background:var(--accent); color:#06140b; border:none; border-radius:10px; padding:10px 14px; font-weight:600; cursor:pointer; }
+
         /* responsive */
         @media (max-width: 520px) {
             body { padding: 12px; }
@@ -202,106 +219,9 @@
             .item { min-height: 220px; padding:6px; }
             .nutri-box { width:78px; min-width:78px; min-height:62px; padding:6px; }
             #details { padding: 14px; border-radius: 12px 12px 0 0; }
+            .modal-content { width: 95%; margin:6vh auto; padding:14px; }
+            #address-list { max-height: 30vh; }
         }
-        .address-modal {
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: 999;
-}
-.address-modal.active { display: block; }
-
-.modal-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.6);
-  backdrop-filter: blur(3px);
-}
-.modal-content {
-  position: relative;
-  background: #1b1b1b;
-  color: #fff;
-  width: 90%;
-  max-width: 400px;
-  margin: 10vh auto;
-  border-radius: 20px;
-  padding: 20px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.5);
-}
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 14px;
-}
-.modal-title {
-  font-size: 18px;
-  font-weight: 700;
-}
-.modal-close {
-  background: transparent;
-  color: #aaa;
-  font-size: 24px;
-  border: none;
-  cursor: pointer;
-}
-.modal-body {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-#address-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.address-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: #222;
-  padding: 10px 14px;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: 0.2s;
-}
-.address-item:hover {
-  background: #2a2a2a;
-}
-.address-item.active {
-  border: 1px solid #95ff61;
-}
-.modal-divider {
-  height: 1px;
-  background: rgba(255,255,255,0.1);
-  margin: 10px 0;
-}
-.modal-add {
-  display: flex;
-  gap: 10px;
-}
-.modal-add input {
-  flex: 1;
-  border-radius: 10px;
-  border: 1px solid rgba(255,255,255,0.1);
-  background: #111;
-  color: #fff;
-  padding: 10px;
-  font-size: 14px;
-}
-.modal-add button {
-  background: #95ff61;
-  color: #000;
-  border: none;
-  border-radius: 10px;
-  padding: 10px 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.2s;
-}
-.modal-add button:hover {
-  background: #aaff77;
-}
     </style>
 </head>
 <body>
@@ -315,7 +235,7 @@
         <!-- address + plus on same line -->
         <div class="address-row">
             <div id="main-address" class="address-card" role="button" title="Открыть адреса">
-                <div class="addr-square" aria-hidden="true"></div>
+                <div id="addr-indicator" class="addr-square" aria-hidden="true"></div>
                 <div class="addr-texts">
                     <div class="addr-line" id="addr-line">Каменноостровский проспект, 40</div>
                     <div class="addr-sub" id="addr-sub">Санкт-Петербург, Россия</div>
@@ -327,23 +247,26 @@
 
         <div class="tabs" id="tabs" role="tablist" aria-label="Категории"></div>
     </div>
-    <div id="address-modal" class="address-modal">
-  <div class="modal-overlay"></div>
-  <div class="modal-content">
-    <div class="modal-header">
-      <div class="modal-title">Адрес доставки</div>
-      <button class="modal-close">×</button>
-    </div>
-    <div class="modal-body">
-      <div id="address-list"></div>
-      <div class="modal-divider"></div>
-      <div class="modal-add">
-        <input id="new-address" type="text" placeholder="Введите новый адрес...">
-        <button id="save-address">Добавить</button>
+
+    <!-- ADDRESS MODAL -->
+    <div id="address-modal" class="address-modal" aria-hidden="true">
+      <div class="modal-overlay" data-role="overlay"></div>
+      <div class="modal-content" role="dialog" aria-modal="true" aria-label="Менеджер адресов">
+        <div class="modal-header">
+          <div class="modal-title">Адрес доставки</div>
+          <button class="modal-close" aria-label="Закрыть модал">×</button>
+        </div>
+        <div class="modal-body">
+          <div id="address-list"></div>
+          <div class="modal-divider"></div>
+          <div class="modal-add">
+            <input id="new-address" type="text" placeholder="Введите новый адрес...">
+            <button id="save-address">Добавить</button>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
+
     <!-- MENU -->
     <div id="menu"></div>
 
@@ -393,6 +316,7 @@
 
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
+        /* === DATA === */
         const menuData = {
             'ШАУРМА': [
                 {name: 'Шаурма классическая', price: 300, desc: 'Курица, капуста, томаты, огурцы, морковь по-корейски, лук, фирменный соус, зелень.', calories: 550, proteins: 25, fats: 30, carbs: 45, image: 'https://thumbs.dreamstime.com/b/close-up-grilled-chicken-shawarma-wrap-vegetables-white-sauce-placed-rustic-wooden-board-warm-lighting-386359191.jpg'},
@@ -439,6 +363,7 @@
         let categories = Object.keys(menuData);
         let currentKey = '';
 
+        /* Render tabs and menu */
         function renderTabs() {
             const tabsDiv = document.getElementById('tabs');
             tabsDiv.innerHTML = '';
@@ -489,11 +414,13 @@
                 catDiv.appendChild(gridDiv);
                 menuDiv.appendChild(catDiv);
             }
+            // ensure first tab active
             const firstTab = document.querySelector('.tab');
             if (firstTab) firstTab.classList.add('active');
         }
 
-        const overlay = document.getElementById('overlay');
+        /* Bottom sheet */
+        const sheetOverlay = document.getElementById('overlay');
         const details = document.getElementById('details');
 
         function showDetails(itemKey) {
@@ -516,15 +443,15 @@
             renderAdditives();
             updateItemUI(itemKey);
 
-            overlay.classList.add('open');
-            overlay.setAttribute('aria-hidden', 'false');
+            sheetOverlay.classList.add('open');
+            sheetOverlay.setAttribute('aria-hidden', 'false');
             document.documentElement.style.overflow = 'hidden';
             document.body.style.overflow = 'hidden';
         }
 
         function hideDetails() {
-            overlay.classList.remove('open');
-            overlay.setAttribute('aria-hidden', 'true');
+            sheetOverlay.classList.remove('open');
+            sheetOverlay.setAttribute('aria-hidden', 'true');
             document.documentElement.style.overflow = '';
             document.body.style.overflow = '';
         }
@@ -601,28 +528,19 @@
             });
         }
 
+        // handlers
         document.getElementById('close-btn').onclick = hideDetails;
         document.querySelector('#detail-counter .minus').onclick = () => changeQuantity(currentKey, -1);
         document.querySelector('#detail-counter .plus').onclick = () => changeQuantity(currentKey, 1);
 
-        overlay.addEventListener('click', (e) => { if (e.target === overlay) hideDetails(); });
+        sheetOverlay.addEventListener('click', (e) => { if (e.target === sheetOverlay) hideDetails(); });
         details.addEventListener('click', (e) => e.stopPropagation());
 
-        const addBtn = document.getElementById('add-address-top');
-        if (addBtn) {
-            addBtn.addEventListener('click', () => {
-                const a = prompt('Добавьте адрес (пример: ул. Ленина, 10):', '');
-                if (a) {
-                    const line = document.getElementById('addr-line');
-                    const sub  = document.getElementById('addr-sub');
-                    if (line) line.textContent = a;
-                    if (sub) sub.textContent = 'Санкт-Петербург, Россия';
-                }
-            });
-        }
-        const mainAddr = document.getElementById('main-address');
-        if (mainAddr) mainAddr.addEventListener('click', () => alert('Открыть менеджер адресов — здесь можно реализовать список/редактирование адресов.'));
+        // init UI
+        renderTabs();
+        renderMenu();
 
+        // Telegram WebApp integration (safe)
         if (window.Telegram && Telegram.WebApp) {
             Telegram.WebApp.ready();
             Telegram.WebApp.MainButton.setParams({color: '#27AE60', text_color: '#ffffff'});
@@ -633,68 +551,86 @@
             Telegram.WebApp.expand();
         }
 
-        renderTabs();
-        renderMenu();
-        // --- Модалка добавления / выбора адреса ---
-(function(){
-  const modal = document.getElementById('address-modal');
-  const overlay = modal.querySelector('.modal-overlay');
-  const closeBtn = modal.querySelector('.modal-close');
-  const list = document.getElementById('address-list');
-  const saveBtn = document.getElementById('save-address');
-  const input = document.getElementById('new-address');
-  const addrLine = document.getElementById('addr-line');
-  const addrSub = document.getElementById('addr-sub');
-  
-  const openModal = () => modal.classList.add('active');
-  const closeModal = () => modal.classList.remove('active');
+        /* === ADDRESS MODAL: logic for open/select/add addresses === */
+        (function(){
+          const modal = document.getElementById('address-modal');
+          const modalOverlay = modal.querySelector('.modal-overlay');
+          const modalClose = modal.querySelector('.modal-close');
+          const list = document.getElementById('address-list');
+          const saveBtn = document.getElementById('save-address');
+          const input = document.getElementById('new-address');
+          const addrLine = document.getElementById('addr-line');
+          const addrSub = document.getElementById('addr-sub');
+          const addrIndicator = document.getElementById('addr-indicator');
 
-  const renderAddresses = () => {
-    const addresses = JSON.parse(localStorage.getItem('addresses') || '[]');
-    list.innerHTML = '';
-    if (!addresses.length) {
-      list.innerHTML = '<div style="color:#777;text-align:center;">Нет сохранённых адресов</div>';
-      return;
-    }
-    addresses.forEach(a => {
-      const div = document.createElement('div');
-      div.className = 'address-item';
-      div.textContent = a;
-      div.onclick = () => {
-        addrLine.textContent = a;
-        addrSub.textContent = 'Санкт-Петербург, Россия';
-        localStorage.setItem('selectedAddress', a);
-        closeModal();
-      };
-      list.appendChild(div);
-    });
-  };
+          const openModal = () => {
+              modal.classList.add('active');
+              modal.setAttribute('aria-hidden','false');
+              renderAddresses();
+              input.focus();
+          };
+          const closeModal = () => {
+              modal.classList.remove('active');
+              modal.setAttribute('aria-hidden','true');
+          };
 
-  const addAddress = () => {
-    const value = input.value.trim();
-    if (!value) return;
-    const addresses = JSON.parse(localStorage.getItem('addresses') || '[]');
-    addresses.push(value);
-    localStorage.setItem('addresses', JSON.stringify(addresses));
-    input.value = '';
-    renderAddresses();
-  };
+          function getAddresses() {
+              return JSON.parse(localStorage.getItem('addresses') || '[]');
+          }
 
-  saveBtn.onclick = addAddress;
-  overlay.onclick = closeModal;
-  closeBtn.onclick = closeModal;
+          function renderAddresses() {
+            const addresses = getAddresses();
+            list.innerHTML = '';
+            if (!addresses.length) {
+              list.innerHTML = '<div style="color:#777;text-align:center;">Нет сохранённых адресов</div>';
+              return;
+            }
+            const selected = localStorage.getItem('selectedAddress') || null;
+            addresses.forEach(a => {
+              const div = document.createElement('div');
+              div.className = 'address-item';
+              div.innerHTML = `<div style="flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${a}</div>`;
+              if (selected === a) div.classList.add('selected');
+              div.onclick = () => {
+                localStorage.setItem('selectedAddress', a);
+                addrLine.textContent = a;
+                addrSub.textContent = 'Санкт-Петербург, Россия';
+                addrIndicator.classList.add('selected');
+                closeModal();
+              };
+              list.appendChild(div);
+            });
+          }
 
-  document.getElementById('main-address').onclick = openModal;
-  document.getElementById('add-address-top').onclick = openModal;
+          function addAddress() {
+            const value = input.value.trim();
+            if (!value) return;
+            const addresses = getAddresses();
+            addresses.unshift(value); // добавляем в начало
+            localStorage.setItem('addresses', JSON.stringify(addresses));
+            localStorage.setItem('selectedAddress', value);
+            addrLine.textContent = value;
+            addrSub.textContent = 'Санкт-Петербург, Россия';
+            addrIndicator.classList.add('selected');
+            input.value = '';
+            renderAddresses();
+          }
 
-  // при загрузке — показать последний выбранный адрес
-  const saved = localStorage.getItem('selectedAddress');
-  if (saved) addrLine.textContent = saved;
+          // wire events
+          document.getElementById('main-address').addEventListener('click', openModal);
+          document.getElementById('add-address-top').addEventListener('click', openModal);
+          modalOverlay.addEventListener('click', closeModal);
+          modalClose.addEventListener('click', closeModal);
+          saveBtn.addEventListener('click', addAddress);
+          input.addEventListener('keydown', (e) => { if (e.key === 'Enter') addAddress(); });
 
-  renderAddresses();
-})();
-
+          // load last selected
+          const saved = localStorage.getItem('selectedAddress');
+          if (saved) {
+            addrLine.textContent = saved;
+            addrIndicator.classList.add('selected');
+          }
+        })();
     </script>
 </body>
 </html>
-
