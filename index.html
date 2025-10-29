@@ -211,28 +211,49 @@
         .modal-add input { flex:1; border-radius:10px; border:1px solid rgba(255,255,255,0.08); background:#111; color:#fff; padding:10px; font-size:14px; }
         .modal-add button { background:var(--accent); color:#06140b; border:none; border-radius:10px; padding:10px 14px; font-weight:600; cursor:pointer; }
 
-        /* CART BUTTON (floating) */
+        /* BIG ROUND CART BUTTON with SVG (user requested) */
         #cart-btn {
             position: fixed;
             right: 18px;
             bottom: 18px;
             z-index: 1200;
+            width: 74px;
+            height: 74px;
+            border-radius: 18px;
             background: linear-gradient(180deg, var(--accent), #0ea86f);
-            color: #05130c;
-            padding: 12px 14px;
-            border-radius: 14px;
-            font-weight: 700;
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            gap: 10px;
-            box-shadow: 0 10px 30px rgba(16,185,129,0.14);
+            justify-content: center;
+            box-shadow: 0 12px 36px rgba(16,185,129,0.18);
             border: none;
             cursor: pointer;
-            min-width: 120px;
-            justify-content: center;
+            padding: 0;
         }
-        #cart-btn .icon { font-size: 18px; }
-        #cart-sum { font-size: 16px; }
+        /* black basket SVG sits inside; make it square and centered */
+        #cart-btn .icon-wrap {
+            width: 40px;
+            height: 40px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            background: transparent;
+            border-radius: 8px;
+        }
+        /* badge with sum */
+        #cart-badge {
+            position: absolute;
+            right: -6px;
+            bottom: -6px;
+            background: #111;
+            color: var(--text);
+            font-weight: 700;
+            padding: 6px 8px;
+            border-radius: 12px;
+            font-size: 13px;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.6);
+            min-width: 48px;
+            text-align:center;
+        }
 
         /* responsive */
         @media (max-width: 520px) {
@@ -244,7 +265,8 @@
             #details { padding: 14px; border-radius: 12px 12px 0 0; }
             .modal-content { width: 95%; margin:6vh auto; padding:14px; }
             #address-list { max-height: 30vh; }
-            #cart-btn { right: 12px; bottom: 12px; padding: 10px 12px; min-width: 110px; }
+            #cart-btn { right: 12px; bottom: 12px; width:66px; height:66px; }
+            #cart-badge { right: -6px; bottom: -6px; padding: 5px 7px; font-size:12px; min-width:44px; }
         }
     </style>
 </head>
@@ -338,10 +360,18 @@
         </div>
     </div>
 
-    <!-- CART BUTTON -->
-    <button id="cart-btn" aria-label="Открыть корзину" title="Открыть корзину">
-        <span class="icon">🛒</span>
-        <span id="cart-sum">0 р</span>
+    <!-- BIG CART BUTTON with black basket SVG and sum badge -->
+    <button id="cart-btn" aria-label="Открыть корзину" title="Открыть корзину" style="display:none;">
+        <span class="icon-wrap" aria-hidden="true">
+            <!-- black basket SVG (simple, crisp) -->
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <rect x="2" y="7" width="20" height="12" rx="2" fill="#000000"/>
+                <path d="M6 7L8 3H16L18 7" stroke="#000000" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M9 11V15" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.15"/>
+                <path d="M15 11V15" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.15"/>
+            </svg>
+        </span>
+        <span id="cart-badge">0 р</span>
     </button>
 
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -537,7 +567,7 @@
 
         /* CART button handling */
         const cartBtn = document.getElementById('cart-btn');
-        const cartSumEl = document.getElementById('cart-sum');
+        const cartBadge = document.getElementById('cart-badge');
 
         function formatPrice(v){ return `${v} р`; }
 
@@ -551,25 +581,25 @@
                 total += itemTotal;
             }
 
-            // update floating cart button
-            cartSumEl.textContent = formatPrice(total);
+            // обновляем бейдж
+            cartBadge.textContent = formatPrice(total);
+
+            // показываем/скрываем большую круглую кнопку
             if (total > 0) {
-                cartBtn.style.display = 'flex';
+                cartBtn.style.display = 'inline-flex';
             } else {
-                // hide cart when empty but keep small dot? we hide per request
                 cartBtn.style.display = 'none';
             }
 
-            // Telegram MainButton (if used)
-            if (window.Telegram && Telegram.WebApp) {
-                if (total > 0) {
-                    Telegram.WebApp.MainButton.setText(`🛒 ${total} р`);
-                    Telegram.WebApp.MainButton.show();
-                } else Telegram.WebApp.MainButton.hide();
-            }
+            // ВСЕГДА скрываем Telegram.MainButton чтобы не было дублирующей длинной кнопки снизу
+            try {
+                if (window.Telegram && Telegram.WebApp) {
+                    Telegram.WebApp.MainButton.hide();
+                }
+            } catch(e) { /* ignore */ }
         }
 
-        // when clicking cart button show simple summary (can be replaced by modal)
+        // при клике на большую кнопку покажем простой обзор корзины (заменить на модалку по желанию)
         cartBtn.addEventListener('click', () => {
             const keys = Object.keys(cart);
             if (!keys.length) {
@@ -614,15 +644,18 @@
         renderTabs();
         renderMenu();
 
-        // Telegram WebApp integration (safe)
+        // Telegram WebApp integration: скрываем MainButton сразу (чтобы не показывался длинный)
         if (window.Telegram && Telegram.WebApp) {
-            Telegram.WebApp.ready();
-            Telegram.WebApp.MainButton.setParams({color: '#27AE60', text_color: '#ffffff'});
-            Telegram.WebApp.MainButton.onClick(() => {
-                Telegram.WebApp.sendData(JSON.stringify(cart));
-                Telegram.WebApp.close();
-            });
-            Telegram.WebApp.expand();
+            try { Telegram.WebApp.ready(); } catch(e){}
+            try { Telegram.WebApp.MainButton.hide(); } catch(e){}
+            try {
+                Telegram.WebApp.MainButton.onClick(() => {
+                    // по-умолчанию не показываем MainButton, но если где-то включится, отправим корзину
+                    Telegram.WebApp.sendData(JSON.stringify(cart));
+                    Telegram.WebApp.close();
+                });
+            } catch(e){}
+            try { Telegram.WebApp.expand(); } catch(e){}
         }
 
         /* === ADDRESS MODAL: logic for open/select/add addresses === */
@@ -706,7 +739,7 @@
             addrIndicator.classList.add('selected');
           }
 
-          // Hide cart button initially if empty
+          // initial cart button state
           updateCart();
         })();
     </script>
