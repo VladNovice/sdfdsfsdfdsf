@@ -129,12 +129,14 @@
             background: rgba(232,255,59,0.04);
         }
 
-        /* =========== REST OF STYLES (kept) =========== */
+        /* =========== REST OF STYLES =========== */
+        /* Показываем все категории (ранее они скрывались) */
         .category { 
             margin-bottom: 30px;
-            display: none;
+            display: block; /* теперь видим все, чтобы можно было просто скроллить */
+            scroll-margin-top: 84px; /* отступ при scrollIntoView, под шапку */
         }
-        .category.active { display: block; }
+        .category.active { /* используется только для подсветки таба */ }
         /* category heading color changed to accent (плюсик) */
         .category h2 { color: var(--accent); font-weight: 700; font-size: 28px; margin-bottom: 15px; }
 
@@ -254,12 +256,12 @@
             <button id="add-address-top" class="add-address-btn" title="Добавить адрес">+</button>
         </div>
 
-        <div class="tabs" id="tabs"></div>
+        <div class="tabs" id="tabs" role="tablist" aria-label="Категории"></div>
     </div>
 
     <!-- MENU -->
     <div id="menu">
-        <!-- Категории будут загружены через JS -->
+        <!-- Категории будут загружены через JS (все видны, можно просто скроллить) -->
     </div>
 
     <!-- BOTTOM SHEET OVERLAY -->
@@ -311,7 +313,7 @@
 
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
-        /* === DATA & JS (основная логика сохранена) === */
+        /* === DATA & JS (основная логика сохранена, изменён showCategory и renderTabs немного) === */
         const menuData = {  
             'ШАУРМА': [
                 {name: 'Шаурма классическая', price: 300, desc: 'Курица, капуста, томаты, огурцы, морковь по-корейски, лук, фирменный соус, зелень.', calories: 550, proteins: 25, fats: 30, carbs: 45, image: 'https://thumbs.dreamstime.com/b/close-up-grilled-chicken-shawarma-wrap-vegetables-white-sauce-placed-rustic-wooden-board-warm-lighting-386359191.jpg'},
@@ -357,35 +359,46 @@
         let categories = Object.keys(menuData);
         let currentKey = '';
 
+        // renderTabs: создаём табы и привязываем к ним прокрутку
         function renderTabs() {
             const tabsDiv = document.getElementById('tabs');
-            tabsDiv.innerHTML = ''; // очищаем, чтобы не дублировать
+            tabsDiv.innerHTML = ''; // очищаем
             categories.forEach((cat, index) => {
                 let tab = document.createElement('div');
                 tab.className = 'tab' + (index === 0 ? ' active' : '');
                 tab.textContent = cat;
+                tab.setAttribute('data-target', `cat-${cat.toLowerCase().replace(/ /g, '-')}`);
                 tab.onclick = () => showCategory(cat);
                 tabsDiv.appendChild(tab);
             });
         }
 
+        // showCategory: НЕ скрываем другие секции — просто плавно скроллим к нужной
         function showCategory(selectedCat) {
-            document.querySelectorAll('.category').forEach(catDiv => {
-                catDiv.classList.remove('active');
-            });
-            const id = `cat-${selectedCat.toLowerCase().replace(/ /g, '-')}`;
-            const el = document.getElementById(id);
-            if (el) el.classList.add('active');
-
+            // подсветка табов
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.classList.remove('active');
                 if (tab.textContent === selectedCat) tab.classList.add('active');
             });
+
+            // прокручиваем tabs контейнер, чтобы активная вкладка была видна
+            const activeTab = Array.from(document.querySelectorAll('.tab')).find(t => t.classList.contains('active'));
+            if (activeTab) {
+                activeTab.scrollIntoView({behavior: 'smooth', inline: 'center'});
+            }
+
+            // плавно скроллим страницу к секции
+            const id = `cat-${selectedCat.toLowerCase().replace(/ /g, '-')}`;
+            const el = document.getElementById(id);
+            if (el) {
+                // используем smooth scroll, с учётом возможной шапки
+                el.scrollIntoView({behavior: 'smooth', block: 'start'});
+            }
         }
 
         function renderMenu() {
             const menuDiv = document.getElementById('menu');
-            menuDiv.innerHTML = ''; //, чтобы не дублировать при повторной инициализации
+            menuDiv.innerHTML = '';
             for (let category in menuData) {
                 let catDiv = document.createElement('div');
                 catDiv.className = 'category';
@@ -408,8 +421,9 @@
                 catDiv.appendChild(gridDiv);
                 menuDiv.appendChild(catDiv);
             }
-            const firstCat = document.querySelector('.category');
-            if (firstCat) firstCat.classList.add('active');
+            // не прячем первую — просто подсвечиваем таб
+            const firstTab = document.querySelector('.tab');
+            if (firstTab) firstTab.classList.add('active');
         }
 
         /* show bottom sheet (замена центрированного модального окна) */
