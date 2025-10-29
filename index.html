@@ -203,6 +203,105 @@
             .nutri-box { width:78px; min-width:78px; min-height:62px; padding:6px; }
             #details { padding: 14px; border-radius: 12px 12px 0 0; }
         }
+        .address-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+}
+.address-modal.active { display: block; }
+
+.modal-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(3px);
+}
+.modal-content {
+  position: relative;
+  background: #1b1b1b;
+  color: #fff;
+  width: 90%;
+  max-width: 400px;
+  margin: 10vh auto;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+}
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+.modal-title {
+  font-size: 18px;
+  font-weight: 700;
+}
+.modal-close {
+  background: transparent;
+  color: #aaa;
+  font-size: 24px;
+  border: none;
+  cursor: pointer;
+}
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+#address-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.address-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #222;
+  padding: 10px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.address-item:hover {
+  background: #2a2a2a;
+}
+.address-item.active {
+  border: 1px solid #95ff61;
+}
+.modal-divider {
+  height: 1px;
+  background: rgba(255,255,255,0.1);
+  margin: 10px 0;
+}
+.modal-add {
+  display: flex;
+  gap: 10px;
+}
+.modal-add input {
+  flex: 1;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: #111;
+  color: #fff;
+  padding: 10px;
+  font-size: 14px;
+}
+.modal-add button {
+  background: #95ff61;
+  color: #000;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.modal-add button:hover {
+  background: #aaff77;
+}
     </style>
 </head>
 <body>
@@ -228,7 +327,23 @@
 
         <div class="tabs" id="tabs" role="tablist" aria-label="Категории"></div>
     </div>
-
+    <div id="address-modal" class="address-modal">
+  <div class="modal-overlay"></div>
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-title">Адрес доставки</div>
+      <button class="modal-close">×</button>
+    </div>
+    <div class="modal-body">
+      <div id="address-list"></div>
+      <div class="modal-divider"></div>
+      <div class="modal-add">
+        <input id="new-address" type="text" placeholder="Введите новый адрес...">
+        <button id="save-address">Добавить</button>
+      </div>
+    </div>
+  </div>
+</div>
     <!-- MENU -->
     <div id="menu"></div>
 
@@ -520,6 +635,66 @@
 
         renderTabs();
         renderMenu();
+        // --- Модалка добавления / выбора адреса ---
+(function(){
+  const modal = document.getElementById('address-modal');
+  const overlay = modal.querySelector('.modal-overlay');
+  const closeBtn = modal.querySelector('.modal-close');
+  const list = document.getElementById('address-list');
+  const saveBtn = document.getElementById('save-address');
+  const input = document.getElementById('new-address');
+  const addrLine = document.getElementById('addr-line');
+  const addrSub = document.getElementById('addr-sub');
+  
+  const openModal = () => modal.classList.add('active');
+  const closeModal = () => modal.classList.remove('active');
+
+  const renderAddresses = () => {
+    const addresses = JSON.parse(localStorage.getItem('addresses') || '[]');
+    list.innerHTML = '';
+    if (!addresses.length) {
+      list.innerHTML = '<div style="color:#777;text-align:center;">Нет сохранённых адресов</div>';
+      return;
+    }
+    addresses.forEach(a => {
+      const div = document.createElement('div');
+      div.className = 'address-item';
+      div.textContent = a;
+      div.onclick = () => {
+        addrLine.textContent = a;
+        addrSub.textContent = 'Санкт-Петербург, Россия';
+        localStorage.setItem('selectedAddress', a);
+        closeModal();
+      };
+      list.appendChild(div);
+    });
+  };
+
+  const addAddress = () => {
+    const value = input.value.trim();
+    if (!value) return;
+    const addresses = JSON.parse(localStorage.getItem('addresses') || '[]');
+    addresses.push(value);
+    localStorage.setItem('addresses', JSON.stringify(addresses));
+    input.value = '';
+    renderAddresses();
+  };
+
+  saveBtn.onclick = addAddress;
+  overlay.onclick = closeModal;
+  closeBtn.onclick = closeModal;
+
+  document.getElementById('main-address').onclick = openModal;
+  document.getElementById('add-address-top').onclick = openModal;
+
+  // при загрузке — показать последний выбранный адрес
+  const saved = localStorage.getItem('selectedAddress');
+  if (saved) addrLine.textContent = saved;
+
+  renderAddresses();
+})();
+
     </script>
 </body>
 </html>
+
