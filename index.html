@@ -211,6 +211,29 @@
         .modal-add input { flex:1; border-radius:10px; border:1px solid rgba(255,255,255,0.08); background:#111; color:#fff; padding:10px; font-size:14px; }
         .modal-add button { background:var(--accent); color:#06140b; border:none; border-radius:10px; padding:10px 14px; font-weight:600; cursor:pointer; }
 
+        /* CART BUTTON (floating) */
+        #cart-btn {
+            position: fixed;
+            right: 18px;
+            bottom: 18px;
+            z-index: 1200;
+            background: linear-gradient(180deg, var(--accent), #0ea86f);
+            color: #05130c;
+            padding: 12px 14px;
+            border-radius: 14px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 10px 30px rgba(16,185,129,0.14);
+            border: none;
+            cursor: pointer;
+            min-width: 120px;
+            justify-content: center;
+        }
+        #cart-btn .icon { font-size: 18px; }
+        #cart-sum { font-size: 16px; }
+
         /* responsive */
         @media (max-width: 520px) {
             body { padding: 12px; }
@@ -221,6 +244,7 @@
             #details { padding: 14px; border-radius: 12px 12px 0 0; }
             .modal-content { width: 95%; margin:6vh auto; padding:14px; }
             #address-list { max-height: 30vh; }
+            #cart-btn { right: 12px; bottom: 12px; padding: 10px 12px; min-width: 110px; }
         }
     </style>
 </head>
@@ -313,6 +337,12 @@
             </div>
         </div>
     </div>
+
+    <!-- CART BUTTON -->
+    <button id="cart-btn" aria-label="Открыть корзину" title="Открыть корзину">
+        <span class="icon">🛒</span>
+        <span id="cart-sum">0 р</span>
+    </button>
 
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
@@ -490,6 +520,7 @@
             if (!cart[itemKey]) cart[itemKey] = {quantity:0, additives:{}};
             cart[itemKey].quantity = Math.max(0, cart[itemKey].quantity + delta);
             cart[itemKey].additives = {...selectedAdditives};
+            if (cart[itemKey].quantity === 0) delete cart[itemKey]; // удаляем нулевые позиции
             updateCart();
             updateItemUI(itemKey);
         }
@@ -504,6 +535,12 @@
             minus.style.display = quantity > 0 ? 'inline-block' : 'none';
         }
 
+        /* CART button handling */
+        const cartBtn = document.getElementById('cart-btn');
+        const cartSumEl = document.getElementById('cart-sum');
+
+        function formatPrice(v){ return `${v} р`; }
+
         function updateCart() {
             let total = 0;
             for (let key in cart) {
@@ -513,6 +550,17 @@
                 for (let addKey in cart[key].additives) itemTotal += additives[addKey].price * cart[key].additives[addKey] * cart[key].quantity;
                 total += itemTotal;
             }
+
+            // update floating cart button
+            cartSumEl.textContent = formatPrice(total);
+            if (total > 0) {
+                cartBtn.style.display = 'flex';
+            } else {
+                // hide cart when empty but keep small dot? we hide per request
+                cartBtn.style.display = 'none';
+            }
+
+            // Telegram MainButton (if used)
             if (window.Telegram && Telegram.WebApp) {
                 if (total > 0) {
                     Telegram.WebApp.MainButton.setText(`🛒 ${total} р`);
@@ -520,6 +568,32 @@
                 } else Telegram.WebApp.MainButton.hide();
             }
         }
+
+        // when clicking cart button show simple summary (can be replaced by modal)
+        cartBtn.addEventListener('click', () => {
+            const keys = Object.keys(cart);
+            if (!keys.length) {
+                alert('Корзина пуста');
+                return;
+            }
+            let msg = 'Содержимое корзины:\n\n';
+            let total = 0;
+            keys.forEach(k => {
+                const [cat, idx] = k.split(':');
+                const item = menuData[cat][parseInt(idx)];
+                const qty = cart[k].quantity;
+                let itemTotal = item.price * qty;
+                let adds = [];
+                for (let a in cart[k].additives) {
+                    adds.push(`${additives[a].name}`);
+                    itemTotal += additives[a].price * cart[k].additives[a] * qty;
+                }
+                total += itemTotal;
+                msg += `${item.name} × ${qty} — ${itemTotal} р` + (adds.length ? `\n  + ${adds.join(', ')}\n` : '\n');
+            });
+            msg += `\nИтого: ${total} р`;
+            alert(msg);
+        });
 
         function searchMenu(value) {
             value = value.toLowerCase();
@@ -567,7 +641,7 @@
               modal.classList.add('active');
               modal.setAttribute('aria-hidden','false');
               renderAddresses();
-              input.focus();
+              setTimeout(()=>input.focus(),100);
           };
           const closeModal = () => {
               modal.classList.remove('active');
@@ -614,6 +688,7 @@
             addrIndicator.classList.add('selected');
             input.value = '';
             renderAddresses();
+            closeModal();
           }
 
           // wire events
@@ -630,6 +705,9 @@
             addrLine.textContent = saved;
             addrIndicator.classList.add('selected');
           }
+
+          // Hide cart button initially if empty
+          updateCart();
         })();
     </script>
 </body>
